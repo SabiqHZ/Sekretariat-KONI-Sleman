@@ -410,16 +410,19 @@
             <nav>
                 <ul>
                     <li><a href="{{ url('/') }}">Home</a></li>
-                    @if(auth()->user()->role === 'administrasi')
-                        <li><a href="{{ route('administrasi.dashboard') }}">Dashboard</a></li>
-                        <li><a href="{{ route('administrasi.surat.index') }}">Surat</a></li>
-                    @elseif(auth()->user()->role === 'keuangan')
-                        <li><a href="{{ route('keuangan.dashboard') }}">Dashboard</a></li>
-                    @elseif(auth()->user()->role === 'aset')
-                        <li><a href="{{ route('aset.dashboard') }}">Dashboard</a></li>
-                    @endif
                     
                     @if(auth()->check())
+                        {{-- Menu untuk user yang sudah login --}}
+                        @if(auth()->user()->role === 'administrasi')
+                            <li><a href="{{ route('administrasi.dashboard') }}">Dashboard</a></li>
+                            <li><a href="{{ route('administrasi.surat.index') }}">Surat</a></li>
+                        @elseif(auth()->user()->role === 'keuangan')
+                            <li><a href="{{ route('keuangan.dashboard') }}">Dashboard</a></li>
+                        @elseif(auth()->user()->role === 'aset')
+                            <li><a href="{{ route('aset.dashboard') }}">Dashboard</a></li>
+                        @endif
+                        
+                        {{-- Profile dropdown untuk user yang sudah login --}}
                         <li class="profile-dropdown">
                             <button class="profile-button" onclick="toggleDropdown()">
                                 <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
@@ -458,6 +461,18 @@
                                 </form>
                             </div>
                         </li>
+                    @else
+                        {{-- Menu untuk guest user --}}
+                        @if(Route::has('login'))
+                            <li>
+                                <a href="{{ route('login') }}">
+                                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                                    </svg>
+                                    Login
+                                </a>
+                            </li>
+                        @endif
                     @endif
                 </ul>
             </nav>
@@ -499,9 +514,12 @@
                 const dropdown = document.getElementById('profileDropdown');
                 const profileButton = document.querySelector('.profile-button');
                 
-                if (!profileButton.contains(event.target) && !dropdown.contains(event.target)) {
+                if (profileButton && !profileButton.contains(event.target) && !dropdown.contains(event.target)) {
                     dropdown.classList.remove('show');
-                    document.getElementById('dropdownArrow').style.transform = 'rotate(0deg)';
+                    const arrow = document.getElementById('dropdownArrow');
+                    if (arrow) {
+                        arrow.style.transform = 'rotate(0deg)';
+                    }
                 }
             });
 
@@ -509,8 +527,13 @@
             document.addEventListener('keydown', function(event) {
                 if (event.key === 'Escape') {
                     const dropdown = document.getElementById('profileDropdown');
-                    dropdown.classList.remove('show');
-                    document.getElementById('dropdownArrow').style.transform = 'rotate(0deg)';
+                    if (dropdown) {
+                        dropdown.classList.remove('show');
+                        const arrow = document.getElementById('dropdownArrow');
+                        if (arrow) {
+                            arrow.style.transform = 'rotate(0deg)';
+                        }
+                    }
                 }
             });
         </script>

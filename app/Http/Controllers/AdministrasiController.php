@@ -11,8 +11,11 @@ class AdministrasiController extends Controller {
     public function index(Request $request)
      {
         $query = Surats::with('jenis');
-
-            if ($request->has('search')) {
+        // Filter berdasarkan jenis surat
+        if ($request->has('show_guest')) {
+            $query->where('is_from_guest', true);            
+        }
+        if ($request->has('search')) {
         $search = $request->input('search');
         $query->where('nomor_surat', 'like', "%{$search}%")
               ->orWhere('pengirim', 'like', "%{$search}%")

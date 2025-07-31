@@ -34,8 +34,8 @@
                 </div>
                 
                 <!-- Upload Button -->
-                <a href="{{ route('administrasi.surat.create') }}" 
-                   class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-medium rounded-2xl hover:from-emerald-600 hover:to-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl border border-emerald-400/20">
+                <a href="{{ route('administrasi.surat.create') }}"
+                    class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-medium rounded-2xl hover:from-emerald-600 hover:to-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl border border-emerald-400/20">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                     </svg>
@@ -51,9 +51,9 @@
                         <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
-                        <input type="text" name="search" value="{{ request('search') }}" 
-                               placeholder="Cari pengirim / nomor surat..." 
-                               class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200">
+                        <input type="text" name="search" value="{{ request('search') }}"
+                                placeholder="Cari pengirim / nomor surat..."
+                                class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200">
                     </div>
                 </div>
 
@@ -79,8 +79,8 @@
 
                 <!-- Filter Button -->
                 <div>
-                    <button type="submit" 
-                            class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold px-6 py-3 rounded-xl hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg">
+                    <button type="submit"
+                             class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold px-6 py-3 rounded-xl hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg">
                         <span class="flex items-center justify-center">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -162,21 +162,52 @@
                     <tbody class="divide-y divide-gray-200">
                         @foreach($surat as $s)
                             <tr class="hover:bg-blue-50/50 transition-colors duration-200">
+                                <!-- Nomor Surat -->
                                 <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ $s->nomor_surat }}</td>
+                                
+                                <!-- Jenis Surat -->
                                 <td class="px-6 py-4 text-sm text-gray-700">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                         {{ $s->jenis->jenis_surat }}
                                     </span>
                                 </td>
+                                
+                                <!-- Pengirim -->
                                 <td class="px-6 py-4 text-sm text-gray-700">{{ $s->Pengirim }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-700">{{ $s->tanggal_surat->format('d-m-Y') }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-700">{{ $s->tanggal_masuk->format('d-m-Y') }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-700 max-w-xs truncate">{{ $s->Keterangan }}</td>
+                                
+                                <!-- Tanggal Surat -->
+                                <td class="px-6 py-4 text-sm text-gray-700">
+                                    @if($s->tanggal_surat)
+                                        {{ $s->tanggal_surat->format('d-m-Y') }}
+                                    @else
+                                        <span class="text-gray-400 italic">-</span>
+                                    @endif
+                                </td>
+                                
+                                <!-- Tanggal Masuk -->
+                                <td class="px-6 py-4 text-sm text-gray-700">
+                                    @if($s->tanggal_masuk)
+                                        {{ $s->tanggal_masuk->format('d-m-Y') }}
+                                    @else
+                                        <span class="text-gray-400 italic">-</span>
+                                    @endif
+                                </td>
+                                
+                                <!-- Keterangan -->
+                                <td class="px-6 py-4 text-sm text-gray-700 max-w-xs truncate">
+                                    @if($s->Keterangan)
+                                        {{ $s->Keterangan }}
+                                    @else
+                                        <span class="text-gray-400 italic">-</span>
+                                    @endif
+                                </td>
+                                
+                                <!-- Aksi -->
                                 <td class="px-6 py-4 text-sm text-center">
                                     <div class="flex items-center justify-center space-x-3">
                                         <!-- Lihat -->
-                                        <a href="{{ route('administrasi.surat.show',$s) }}" 
-                                           class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors duration-200">
+                                        <a href="{{ route('administrasi.surat.show',$s) }}"
+                                            class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors duration-200">
                                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -185,18 +216,18 @@
                                         </a>
                                         
                                         <!-- Edit -->
-                                        <a href="{{ route('administrasi.surat.edit',$s) }}" 
-                                           class="inline-flex items-center px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors duration-200">
+                                        <a href="{{ route('administrasi.surat.edit',$s) }}"
+                                            class="inline-flex items-center px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors duration-200">
                                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                             </svg>
                                             Edit
                                         </a>
-
+                                        
                                         <!-- PDF -->
                                         @if($s->file_path)
-                                            <a href="{{ Storage::url($s->file_path) }}" target="_blank" 
-                                               class="inline-flex items-center px-3 py-1.5 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors duration-200">
+                                            <a href="{{ Storage::url($s->file_path) }}" target="_blank"
+                                                class="inline-flex items-center px-3 py-1.5 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors duration-200">
                                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                                 </svg>
@@ -210,12 +241,12 @@
                                                 Tidak ada file
                                             </span>
                                         @endif
-
+                                        
                                         <!-- Hapus -->
                                         <form action="{{ route('administrasi.surat.destroy',$s) }}" method="POST" class="inline">
                                             @csrf @method('DELETE')
-                                            <button type="submit" onclick="return confirm('Yakin ingin menghapus surat ini?')" 
-                                                    class="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors duration-200">
+                                            <button type="submit" onclick="return confirm('Yakin ingin menghapus surat ini?')"
+                                                     class="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors duration-200">
                                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                                 </svg>
@@ -254,13 +285,23 @@
                                 <svg class="w-4 h-4 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
-                                <span class="font-medium">Tgl Surat:</span> {{ $s->tanggal_surat->format('d-m-Y') }}
+                                <span class="font-medium">Tgl Surat:</span> 
+                                @if($s->tanggal_surat)
+                                    {{ $s->tanggal_surat->format('d-m-Y') }}
+                                @else
+                                    <span class="text-gray-400 italic">-</span>
+                                @endif
                             </div>
                             <div class="flex items-center">
                                 <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                <span class="font-medium">Tgl Masuk:</span> {{ $s->tanggal_masuk->format('d-m-Y') }}
+                                <span class="font-medium">Tgl Masuk:</span> 
+                                @if($s->tanggal_masuk)
+                                    {{ $s->tanggal_masuk->format('d-m-Y') }}
+                                @else
+                                    <span class="text-gray-400 italic">-</span>
+                                @endif
                             </div>
                             @if($s->Keterangan)
                                 <div class="flex items-start">
@@ -273,8 +314,8 @@
                         </div>
 
                         <div class="flex flex-wrap gap-2">
-                            <a href="{{ route('administrasi.surat.show',$s) }}" 
-                               class="flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-sm hover:bg-blue-200 transition-colors duration-200">
+                            <a href="{{ route('administrasi.surat.show',$s) }}"
+                                class="flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-sm hover:bg-blue-200 transition-colors duration-200">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -282,8 +323,8 @@
                                 Lihat
                             </a>
                             
-                            <a href="{{ route('administrasi.surat.edit',$s) }}" 
-                               class="flex items-center px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-lg text-sm hover:bg-yellow-200 transition-colors duration-200">
+                            <a href="{{ route('administrasi.surat.edit',$s) }}"
+                                class="flex items-center px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-lg text-sm hover:bg-yellow-200 transition-colors duration-200">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                 </svg>
@@ -291,8 +332,8 @@
                             </a>
 
                             @if($s->file_path)
-                                <a href="{{ Storage::url($s->file_path) }}" target="_blank" 
-                                   class="flex items-center px-3 py-1.5 bg-green-100 text-green-700 rounded-lg text-sm hover:bg-green-200 transition-colors duration-200">
+                                <a href="{{ Storage::url($s->file_path) }}" target="_blank"
+                                    class="flex items-center px-3 py-1.5 bg-green-100 text-green-700 rounded-lg text-sm hover:bg-green-200 transition-colors duration-200">
                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                     </svg>
@@ -309,8 +350,8 @@
 
                             <form action="{{ route('administrasi.surat.destroy',$s) }}" method="POST" class="inline">
                                 @csrf @method('DELETE')
-                                <button type="submit" onclick="return confirm('Yakin ingin menghapus surat ini?')" 
-                                        class="flex items-center px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-sm hover:bg-red-200 transition-colors duration-200">
+                                <button type="submit" onclick="return confirm('Yakin ingin menghapus surat ini?')"
+                                         class="flex items-center px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-sm hover:bg-red-200 transition-colors duration-200">
                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                     </svg>
@@ -321,3 +362,7 @@
                     </div>
                 @endforeach
             </div>
+        </div>
+    </div>
+</div>
+@endsection

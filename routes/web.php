@@ -6,6 +6,7 @@ use App\Http\Middleware\AsetMiddleware;
 use App\Http\Middleware\KeuanganMiddleware;
 use App\Http\Middleware\AdministrasiMiddleware;
 use App\Http\Controllers\AdministrasiController;
+use App\Http\Controllers\GuestSuratController;
 
 
 Route::get('/', function () {
@@ -38,6 +39,13 @@ Route::get('/aset/dashboard', function () {
 Route::get('/keuangan/dashboard', function () {
     return view('keuangan.dashboard');
 })->middleware(['auth', 'verified', KeuanganMiddleware::class])->name('keuangan.dashboard');
+
+
+// Guest Routes
+Route::prefix('guest')->name('guest.')->group(function () {
+    Route::get('/surat', [GuestSuratController::class, 'create'])->name('surat.create');
+    Route::post('/surat', [GuestSuratController::class, 'store'])->name('surat.store');
+});
 
 
 

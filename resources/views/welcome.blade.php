@@ -71,6 +71,24 @@
             background: linear-gradient(135deg, #2563eb, #1d4ed8);
         }
 
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            transform: translateY(-3px);
+        }
+
         main {
             flex: 1;
             padding-top: 100px;
@@ -212,6 +230,13 @@
             position: relative;
         }
 
+        /* Icon for button */
+        .btn-icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
         /* Responsive design */
         @media (max-width: 768px) {
             header {
@@ -232,6 +257,11 @@
             .btn {
                 padding: 0.5rem 1rem;
                 font-size: 0.9rem;
+            }
+
+            .btn-primary {
+                padding: 0.875rem 1.5rem;
+                font-size: 1rem;
             }
             
             section h2 {
@@ -272,6 +302,13 @@
         <section id="home">
             <h2>Home</h2>
             <p>Selamat datang di website resmi Sekretariat KONI Sleman. Platform digital yang menyediakan informasi lengkap dan akses mudah untuk seluruh kebutuhan administrasi dan layanan KONI Sleman.</p>
+            
+            <a href="{{ route('guest.surat.create') }}" class="btn-primary">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                </svg>
+                Kirim Surat
+            </a>
         </section>
         
         <section id="tentang">
