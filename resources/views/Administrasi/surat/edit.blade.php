@@ -11,7 +11,7 @@ d-lg shadow">
             <label class="block font-semibold">Jenis Surat</label>
             <select name="jenis_surat_id" class="w-full border rounded p-2">
                 @foreach($types as $type)
-                    <option value="{{ $type->id }}" {{ $surat->jenis_surat_id == $type->id ? 'selected' : '' }}>{{ $type->nama }}</option>
+                    <option value="{{ $type->id }}"> {{ $type->jenis_surat }} </option>
                 @endforeach
             </select>
         </div>

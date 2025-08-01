@@ -75,7 +75,7 @@ class AdministrasiController extends Controller {
     public function show(Surats $surat) { 
         return view('administrasi.surat.show',compact('surat')); }
     public function edit(Surats $surat) {
-
+        $types = JenisSurat::all();
         return view('administrasi.surat.edit',compact('surat','types')); }
 
     public function update(Request $request, Surats $surat) {

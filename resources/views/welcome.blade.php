@@ -289,7 +289,19 @@
             <div>
                 @if (Route::has('login'))
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="btn">Dashboard</a>
+                        @php
+                            $role = auth()->user()->role;
+
+                            if ($role === 'administrasi') {
+                                $dashboardRoute = route('administrasi.dashboard');
+                            } elseif ($role === 'keuangan') {
+                                $dashboardRoute = route('keuangan.dashboard');
+                            } elseif ($role === 'aset') {
+                                $dashboardRoute = route('aset.dashboard');
+                            }
+                        @endphp
+
+                        <a href="{{ $dashboardRoute }}" class="btn">Dashboard</a>
                     @else
                         <a href="{{ route('login') }}" class="btn">Login</a>
                     @endauth
