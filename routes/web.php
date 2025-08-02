@@ -7,7 +7,7 @@ use App\Http\Middleware\KeuanganMiddleware;
 use App\Http\Middleware\AdministrasiMiddleware;
 use App\Http\Controllers\AdministrasiController;
 use App\Http\Controllers\GuestSuratController;
-
+use App\Http\Controllers\JenisSuratController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -30,6 +30,21 @@ Route::prefix('administrasi/dashboard')->name('administrasi.')->middleware(['aut
 Route::get('surat/{surat}/pdf', [AdministrasiController::class, 'exportPdf'])->name('surat.pdf');
 });
 
+Route::middleware(['auth', 'verified', AdministrasiMiddleware::class])
+    ->prefix('administrasi/dashboard')
+    ->name('administrasi.')
+    ->group(function () {
+        // Route untuk Jenis Surat (tetap gunakan 'jenissurat' sebagai URL)
+        Route::resource('jenissurat', JenisSuratController::class)->names([
+            'index' => 'jenis-surat.index',
+            'create' => 'jenis-surat.create',
+            'store' => 'jenis-surat.store',
+            'edit' => 'jenis-surat.edit',
+            'update' => 'jenis-surat.update',
+            'destroy' => 'jenis-surat.destroy'
+        ]);
+    });
+
 
 Route::get('/aset/dashboard', function () {
     return view('aset.dashboard');
@@ -39,6 +54,8 @@ Route::get('/aset/dashboard', function () {
 Route::get('/keuangan/dashboard', function () {
     return view('keuangan.dashboard');
 })->middleware(['auth', 'verified', KeuanganMiddleware::class])->name('keuangan.dashboard');
+
+
 
 
 // Guest Routes

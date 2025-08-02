@@ -4,6 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Sekretariat KONI Sleman</title>
+    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+
     <link rel="preconnect" href="https://fonts.bunny.net" />
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <style>
@@ -36,6 +38,7 @@
             right: 0;
             z-index: 1000;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            animation: slideDown 0.8s ease-out;
         }
 
         header h1 {
@@ -72,21 +75,46 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #10b981, #059669);
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 1.25rem 2.5rem;
+            font-size: 1.2rem;
             font-weight: 600;
-            margin-top: 2rem;
+            margin-top: 3rem;
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
+            border-radius: 50px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 1.2s forwards;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
         }
 
         .btn-primary:hover {
-            background: linear-gradient(135deg, #059669, #047857);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-            transform: translateY(-3px);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
         }
 
         main {
@@ -108,8 +136,21 @@
         }
 
         #home {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 244, 248, 0.8));
-            backdrop-filter: blur(10px);
+            background: 
+                linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                url('/images/konibg.jpg') center/cover no-repeat;
+            color: white;
+            opacity: 0;
+            animation: fadeIn 1.5s ease-out forwards;
+        }
+
+        .logo {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.3s forwards;
+            filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
         }
 
         #tentang {
@@ -118,9 +159,21 @@
         }
 
         section h2 {
-            font-size: 3rem;
+            font-size: 4rem;
             font-weight: bold;
             margin-bottom: 2rem;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.6s forwards;
+        }
+
+        #home h2 {
+            color: white;
+            background: none;
+            -webkit-text-fill-color: white;
+        }
+
+        #tentang h2 {
             background: linear-gradient(135deg, #1e40af, #3b82f6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -129,9 +182,20 @@
         }
 
         section p {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             line-height: 1.8;
-            max-width: 600px;
+            max-width: 700px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.9s forwards;
+        }
+
+        #home p {
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+            font-weight: 500;
+        }
+
+        #tentang p {
             color: #374151;
             text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
         }
@@ -159,6 +223,42 @@
             background: linear-gradient(135deg, rgba(167, 139, 250, 0.1), rgba(196, 181, 253, 0.1));
             border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
             animation: float 8s ease-in-out infinite reverse;
+        }
+
+        #home::before,
+        #home::after {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @keyframes float {
@@ -232,9 +332,10 @@
 
         /* Icon for button */
         .btn-icon {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             fill: currentColor;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
         }
 
         /* Responsive design */
@@ -260,12 +361,17 @@
             }
 
             .btn-primary {
-                padding: 0.875rem 1.5rem;
-                font-size: 1rem;
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
+            }
+
+            .logo {
+                width: 120px;
+                height: 120px;
             }
             
             section h2 {
-                font-size: 2.5rem;
+                font-size: 2.8rem;
             }
             
             section p {
@@ -275,6 +381,22 @@
             
             main {
                 padding-top: 140px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                width: 100px;
+                height: 100px;
+            }
+
+            section h2 {
+                font-size: 2.2rem;
+            }
+
+            .btn-primary {
+                padding: 0.875rem 1.5rem;
+                font-size: 1rem;
             }
         }
     </style>
@@ -312,6 +434,7 @@
 
     <main>
         <section id="home">
+            <img src="/images/koni-logo.png" alt="KONI Logo" class="logo">
             <h2>Home</h2>
             <p>Selamat datang di website resmi Sekretariat KONI Sleman. Platform digital yang menyediakan informasi lengkap dan akses mudah untuk seluruh kebutuhan administrasi dan layanan KONI Sleman.</p>
             
@@ -350,6 +473,28 @@
                 section.scrollIntoView({ behavior: 'smooth' });
             }
         }
+
+        // Intersection Observer untuk animasi saat scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                }
+            });
+        }, observerOptions);
+
+        // Observe sections yang belum ter-animate
+        document.addEventListener('DOMContentLoaded', () => {
+            const sectionsToObserve = document.querySelectorAll('#tentang');
+            sectionsToObserve.forEach(section => {
+                observer.observe(section);
+            });
+        });
     </script>
 </body>
 </html>

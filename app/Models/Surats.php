@@ -22,6 +22,8 @@ class Surats extends Model {
         'tanggal_masuk',
         'keterangan',
         'file_path',
+        'is_from_guest',
+        'guest_name',
     ];
 
     public function jenis() {

@@ -59,12 +59,12 @@
                                 <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
                                 </svg>
-                                Email Anda
+                                Nama Pengirim
                             </span>
                         </label>
-                        <input type="email" name="guest_email" 
+                        <input type="text" name="guest_name" 
                                class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" 
-                               placeholder="nama@email.com"
+                               placeholder="Nama lengkap Anda"
                                required>
                     </div>
 
@@ -97,7 +97,7 @@
                                 <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                 </svg>
-                                Pengirim
+                                Instansi Pengirim
                             </span>
                         </label>
                         <input type="text" name="pengirim" 
@@ -222,8 +222,18 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            confirmButtonText: 'OK'
+        });
+        @endif
+
     const fileInput = document.getElementById('file-upload');
     const fileName = document.getElementById('file-name');
     const selectedFileName = document.getElementById('selected-file-name');

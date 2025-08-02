@@ -27,6 +27,7 @@
             <p class="text-gray-600">Lengkapi form berikut untuk membuat surat administrasi baru</p>
         </div>
 
+
         <!-- Main Form Card -->
         <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
             <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-2"></div>
@@ -144,44 +145,59 @@
                                   placeholder="Deskripsi singkat tentang isi surat..."></textarea>
                     </div>
 
-                    <!-- Upload File -->
+                   <!-- Upload File -->
                     <div class="lg:col-span-2">
                         <label class="block text-sm font-semibold text-gray-700 mb-2">
                             <span class="flex items-center">
                                 <svg class="w-4 h-4 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                                 </svg>
                                 Upload PDF (opsional)
                             </span>
                         </label>
+
                         <div class="relative">
+                            <!-- Ikon PDF di tengah -->
+                            <div class="flex justify-center mb-4">
+                                <img src="https://www.svgrepo.com/show/447637/file-upload.svg"
+                                    alt="Upload PDF"
+                                     class="w-10 h-10 max-w-[40px] object-contain">
+                            </div>
+
+                            <!-- Input file transparan -->
                             <input type="file" name="file" accept="application/pdf" id="file-upload"
-                                   class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                            <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-blue-400 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-200 transition-all duration-200 bg-gray-50 hover:bg-blue-50">
+                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+
+                            <!-- Area drag & drop -->
+                            <div class="w-full md:w-1/2 lg:w-1/3 mx-auto border border-gray-200 rounded-lg p-4 text-center transition-shadow hover:shadow-lg bg-white/80">
                                 <div class="flex flex-col items-center">
-                                    <svg class="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                    <svg class="w-8 h-8 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 4v16h16V4H4zm4 8h8m-4-4v8"></path>
                                     </svg>
-                                    <p class="text-gray-600 mb-2">
+                                    <p class="text-gray-500 text-sm mb-1">
                                         <span class="font-semibold text-blue-600 hover:text-blue-500">Klik untuk upload</span>
-                                        atau drag & drop file
+                                        atau drag & drop
                                     </p>
-                                    <p class="text-sm text-gray-500">PDF hingga 10MB</p>
+                                    <p class="text-xs text-gray-400">PDF maksimal 10MB</p>
                                 </div>
                             </div>
-                        </div>
-                        <div id="file-name" class="mt-2 text-sm text-gray-600 hidden">
-                            <span class="flex items-center">
-                                <svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <span id="selected-file-name"></span>
-                            </span>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-2">Format yang didukung: PDF (Maksimal 10MB)</p>
-                    </div>
-                </div>
 
+                            <!-- Preview nama file -->
+                            <div id="file-name" class="mt-2 text-sm text-gray-600 hidden">
+                                <span class="flex items-center">
+                                    <svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span id="selected-file-name"></span>
+                                </span>
+                            </div>
+
+                            <p class="text-xs text-gray-500 mt-2">Format yang didukung: PDF (Maksimal 10MB)</p>
+                        </div>
+                    </div>
                 <!-- Action Buttons -->
                 <div class="flex justify-center mt-8 pt-6 border-t border-gray-200">
                     <button type="submit" 

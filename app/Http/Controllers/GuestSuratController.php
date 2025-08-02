@@ -6,6 +6,7 @@ use App\Models\Surats;
 use App\Models\JenisSurat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class GuestSuratController extends Controller
 {
@@ -19,8 +20,8 @@ class GuestSuratController extends Controller
     {
         $validated = $request->validate([
             'nomor_surat' => 'required|string|max:255',
-            'guest_email' => 'required|email|max:255',
-            'tanggal_surat' => 'required|date',
+            'guest_name' => 'required|string|max:255',
+            'tanggal_surat' => 'nullable|date',
             'pengirim' => 'required|string|max:255',
             'jenis_surat_id' => 'required|exists:jenis_surat,id',
             'keterangan' => 'nullable|string',
@@ -39,11 +40,12 @@ class GuestSuratController extends Controller
             'keterangan' => $validated['keterangan'],
             'file_path' => $filePath,
             'is_from_guest' => true,
-            'guest_email' => $validated['guest_email'],
-            'created_by' => null // Karena guest tidak login
+            'guest_name' => $validated['guest_name'],
+            'created_by' => null, // Karena guest tidak login
+            'tanggal_masuk' => Carbon::now(),
         ]);
 
         return redirect()->route('guest.surat.create')
-            ->with('success', 'Surat berhasil dikirim! Kami akan menghubungi via email.');
+            ->with('success', 'Surat berhasil dikirim!');
     }
 }

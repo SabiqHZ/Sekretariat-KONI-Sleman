@@ -6,6 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}" />
 
         <title>@yield('title', config('app.name', 'Sekretariat KONI Sleman'))</title>
+        <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net" />
@@ -404,6 +405,7 @@
             }
         </style>
     </head>
+    @stack('scripts')
     <body>
         <header>
             <h1>{{ config('app.name', 'Sekretariat KONI SLEMAN') }}</h1>

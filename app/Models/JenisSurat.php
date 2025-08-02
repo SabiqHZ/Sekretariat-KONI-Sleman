@@ -10,7 +10,6 @@ class JenisSurat extends Model
 
     protected $fillable = [
         'jenis_surat',
-        'kode_jenis_surat',
     ];
 
     public function surats()
