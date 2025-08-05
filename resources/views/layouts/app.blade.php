@@ -300,13 +300,28 @@
                 border-radius: 15px;
                 overflow: hidden;
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-                border: 1px solid rgba(255, 255, 255, 0.2);
+                border: 2px solid rgba(255, 255, 255, 0.2);
             }
+                    tr {
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        /* Baris guest */
+        tr.guest-row {
+            background: rgba(254, 243, 199, 0.8); /* Warna orange lebih terang */
+            border-left: 4px solid #f59e0b; /* Border kiri orange */
+        }
+
+        /* Hover effect khusus untuk guest */
+        tr.guest-row:hover {
+            background: rgba(254, 243, 199, 0.9); /* Warna orange lebih solid saat hover */
+        }
 
             th, td {
                 padding: 1rem;
                 text-align: left;
-                border-bottom: 1px solid rgba(209, 213, 219, 0.3);
+                border-bottom: 5px solid rgba(209, 213, 219, 0.3);
             }
 
             th {
@@ -468,7 +483,6 @@
                         @if(Route::has('login'))
                             <li>
                                 <a href="{{ route('login') }}">
-                                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
                                     </svg>
                                     Login
@@ -493,7 +507,7 @@
         </main>
         
         <footer>
-            <p>&copy; {{ date('M, Y') }} {{ config('app.name', 'Laravel') }}. All rights reserved.</p>
+            <p>&copy; {{ date('M, Y') }} {{ config('app.name', 'Sekretariat KONI Sleman') }}. All rights reserved.</p>
         </footer>
 
         <!-- JavaScript for dropdown functionality -->

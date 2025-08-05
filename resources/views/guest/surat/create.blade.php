@@ -48,8 +48,7 @@
                         </label>
                         <input type="text" name="nomor_surat" 
                                class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" 
-                               placeholder="Contoh: 001/ADM/2024"
-                               required>
+                               placeholder="Contoh: 001/ADM/2024">
                     </div>
 
                     <!-- Email Guest -->
@@ -64,8 +63,7 @@
                         </label>
                         <input type="text" name="guest_name" 
                                class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" 
-                               placeholder="Nama lengkap Anda"
-                               required>
+                               placeholder="Nama lengkap Anda">
                     </div>
 
                     <!-- Tanggal Surat -->
@@ -80,8 +78,7 @@
                         </label>
                         <div class="relative">
                             <input type="date" name="tanggal_surat" 
-                                   class="w-full border-2 border-gray-200 rounded-xl p-3 pr-12 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 cursor-pointer bg-white" 
-                                   required>
+                                   class="w-full border-2 border-gray-200 rounded-xl p-3 pr-12 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 cursor-pointer bg-white">
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -102,8 +99,7 @@
                         </label>
                         <input type="text" name="pengirim" 
                                class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" 
-                               placeholder="Nama instansi atau perorangan"
-                               required>
+                               placeholder="Nama instansi atau perorangan">
                     </div>
 
                     <!-- Jenis Surat -->
@@ -116,7 +112,7 @@
                                 Jenis Surat
                             </span>
                         </label>
-                        <select name="jenis_surat_id" class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white" required>
+                        <select name="jenis_surat_id" class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white">
                             <option value="">Pilih Jenis Surat</option>
                             @foreach($types as $type)
                                 <option value="{{ $type->id }}">{{ $type->jenis_surat }}</option>
@@ -149,47 +145,64 @@
                                 Upload PDF (wajib)
                             </span>
                         </label>
-                        <div class="relative">
-                            <input type="file" name="file" accept="application/pdf" id="file-upload" required
-                                   class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                            <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-blue-400 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-200 transition-all duration-200 bg-gray-50 hover:bg-blue-50">
-                                <div class="flex flex-col items-center">
-                                    <svg class="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                                    </svg>
-                                    <p class="text-gray-600 mb-2">
-                                        <span class="font-semibold text-blue-600 hover:text-blue-500">Klik untuk upload</span>
-                                        atau drag & drop file
-                                    </p>
-                                    <p class="text-sm text-gray-500">PDF hingga 10MB</p>
+                <div class="max-w-md mx-auto">
+                    <!-- File Upload dengan Drag & Drop -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Upload Dokumen <span class="text-red-500">*</span></label>
+                        
+                        <div class="relative" id="drop-zone">
+                            <!-- Input file yang tersembunyi (required) -->
+                            <input type="file" id="file-upload" name="file" accept="application/pdf"
+                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                            
+                            <!-- Tampilan custom -->
+                            <div class="flex items-center border border-gray-300 rounded-md bg-white hover:bg-gray-50 transition-colors">
+                                <!-- Tombol -->
+                                <div class="px-4 py-2 bg-gray-100 border-r border-gray-300 text-sm font-medium text-gray-700 rounded-l-md">
+                                    Pilih File
+                                </div>
+                                
+                                <!-- Nama file -->
+                                <div class="px-3 py-2 text-sm text-gray-500 truncate flex-1" id="file-name-display">
+                                    Tidak ada file dipilih
                                 </div>
                             </div>
                         </div>
-                        <div id="file-name" class="mt-2 text-sm text-gray-600 hidden">
-                            <span class="flex items-center">
-                                <svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <span id="selected-file-name"></span>
-                            </span>
+                        
+                        <!-- Info format file -->
+                        <p class="text-xs text-gray-500">
+                            Seret file PDF ke sini atau klik untuk memilih (maks. 10MB)
+                        </p>
+                        
+                        <!-- Preview file dengan tombol hapus -->
+                        <div id="file-preview" class="hidden mt-2">
+                            <div class="flex items-center justify-between p-2 bg-blue-50 rounded text-sm text-blue-800">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span id="selected-file-name"></span>
+                                </div>
+                                <button type="button" id="remove-file" class="text-red-500 hover:text-red-700">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2">Format yang didukung: PDF (Maksimal 10MB)</p>
                     </div>
                 </div>
-
-                <!-- Action Buttons -->
-                <div class="flex justify-center mt-8 pt-6 border-t border-gray-200">
-                    <button type="submit" 
-                            class="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 px-8 rounded-xl hover:from-blue-600 hover:to-purple-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl">
-                        <span class="flex items-center justify-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                            </svg>
-                            Kirim Surat
-                        </span>
-                    </button>
-                </div>
-            </form>
+        <!-- Action Buttons -->
+        <div class="flex justify-center mt-8 pt-6 border-t border-gray-200">
+            <button type="submit" id="submit-button"
+                    class="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 px-8 rounded-xl hover:from-blue-600 hover:to-purple-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl">
+                <span class="flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                    </svg>
+                    Kirim Surat
+                </span>
+            </button>
         </div>
 
         <!-- Help Section -->
@@ -225,70 +238,177 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        @if(session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: '{{ session('success') }}',
-            confirmButtonText: 'OK'
-        });
-        @endif
-
-    const fileInput = document.getElementById('file-upload');
-    const fileName = document.getElementById('file-name');
+        const fileInput = document.getElementById('file-upload');
+    const dropZone = document.getElementById('drop-zone');
+    const fileNameDisplay = document.getElementById('file-name-display');
+    const filePreview = document.getElementById('file-preview');
     const selectedFileName = document.getElementById('selected-file-name');
-    
+    const form = document.querySelector('form');
+    const submitButton = document.getElementById('submit-button');
+
+        // Nonaktifkan validasi HTML5 default
+    form.setAttribute('novalidate', '');
+
+        // Tambahkan event listener untuk tombol hapus
+    document.getElementById('remove-file').addEventListener('click', function() {
+        resetFileInput();
+    });
+
+    function resetFileInput() {
+        fileInput.value = '';
+        fileNameDisplay.textContent = 'Tidak ada file dipilih';
+        fileNameDisplay.classList.add('text-gray-500');
+        fileNameDisplay.classList.remove('text-gray-700', 'font-medium');
+        filePreview.classList.add('hidden');
+        
+        // Tampilkan notifikasi bahwa file dihapus (opsional)
+        Swal.fire({
+            icon: 'info',
+            title: 'File dihapus',
+            text: 'Anda dapat memilih file baru',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3B82F6',
+            timer: 2000
+        });
+    }
+    // Handle file selection
     fileInput.addEventListener('change', function(e) {
         if (e.target.files.length > 0) {
-            const file = e.target.files[0];
-            selectedFileName.textContent = file.name;
-            fileName.classList.remove('hidden');
-        } else {
-            fileName.classList.add('hidden');
+            validateAndDisplayFile(e.target.files[0]);
         }
     });
-    
+
     // Drag and drop functionality
-    const dropZone = fileInput.parentElement;
-    
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
         dropZone.addEventListener(eventName, preventDefaults, false);
     });
-    
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-    
+
     ['dragenter', 'dragover'].forEach(eventName => {
         dropZone.addEventListener(eventName, highlight, false);
     });
-    
+
     ['dragleave', 'drop'].forEach(eventName => {
         dropZone.addEventListener(eventName, unhighlight, false);
     });
-    
-    function highlight(e) {
-        dropZone.classList.add('border-blue-500', 'bg-blue-100');
-    }
-    
-    function unhighlight(e) {
-        dropZone.classList.remove('border-blue-500', 'bg-blue-100');
-    }
-    
-    dropZone.addEventListener('drop', handleDrop, false);
-    
-    function handleDrop(e) {
+
+    dropZone.addEventListener('drop', function(e) {
         const dt = e.dataTransfer;
         const files = dt.files;
         
         if (files.length > 0) {
             fileInput.files = files;
-            const file = files[0];
-            selectedFileName.textContent = file.name;
-            fileName.classList.remove('hidden');
+            validateAndDisplayFile(files[0]);
         }
+    });
+
+    // Form submission handler
+    form.addEventListener('submit', function(e) {
+        if (!fileInput.files.length) {
+            e.preventDefault();
+            showError('File wajib diupload', 'Silakan pilih file PDF sebelum mengirim');
+            return;
+        }
+
+        const file = fileInput.files[0];
+        if (file.type !== 'application/pdf') {
+            e.preventDefault();
+            showError('Format file tidak valid', 'Hanya file PDF yang diperbolehkan');
+            return;
+        }
+
+        if (file.size > 10 * 1024 * 1024) { // 10MB
+            e.preventDefault();
+            showError('File terlalu besar', 'Ukuran file maksimal 10MB');
+            return;
+        }
+
+        // Jika validasi lolos, form akan submit
+        submitButton.disabled = true;
+        submitButton.innerHTML = `
+            <span class="flex items-center justify-center">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Mengirim...
+            </span>
+        `;
+    });
+
+    function validateAndDisplayFile(file) {
+        // Validasi tipe file
+        if (file.type !== 'application/pdf') {
+            showError('Format file tidak valid', 'Hanya file PDF yang diperbolehkan');
+            resetFileInput();
+            return;
+        }
+
+        // Validasi ukuran file
+        if (file.size > 10 * 1024 * 1024) { // 10MB
+            showError('File terlalu besar', 'Ukuran file maksimal 10MB');
+            resetFileInput();
+            return;
+        }
+
+        // Jika validasi lolos, tampilkan file
+        selectedFileName.textContent = file.name;
+        fileNameDisplay.textContent = file.name;
+        fileNameDisplay.classList.remove('text-gray-500');
+        fileNameDisplay.classList.add('text-gray-700', 'font-medium');
+        filePreview.classList.remove('hidden');
     }
+
+    function resetFileInput() {
+        fileInput.value = '';
+        fileNameDisplay.textContent = 'Tidak ada file dipilih';
+        fileNameDisplay.classList.add('text-gray-500');
+        fileNameDisplay.classList.remove('text-gray-700', 'font-medium');
+        filePreview.classList.add('hidden');
+    }
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    function highlight() {
+        dropZone.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50');
+    }
+
+    function unhighlight() {
+        dropZone.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50');
+    }
+
+    function showError(title, text) {
+        Swal.fire({
+            icon: 'error',
+            title: title,
+            text: text,
+            confirmButtonText: 'Mengerti',
+            confirmButtonColor: '#3B82F6'
+        });
+    }
+
+    // Notifikasi sukses dari server
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3B82F6'
+        });
+    @endif
+
+    @if($errors->any())
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            html: '{!! implode('<br>', $errors->all()) !!}',
+            confirmButtonText: 'Mengerti',
+            confirmButtonColor: '#3B82F6'
+        });
+    @endif
 });
 </script>
 @endsection

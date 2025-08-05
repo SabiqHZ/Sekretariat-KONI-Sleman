@@ -157,47 +157,41 @@
                             </span>
                         </label>
 
-                        <div class="relative">
-                            <!-- Ikon PDF di tengah -->
-                            <div class="flex justify-center mb-4">
-                                <img src="https://www.svgrepo.com/show/447637/file-upload.svg"
-                                    alt="Upload PDF"
-                                     class="w-10 h-10 max-w-[40px] object-contain">
-                            </div>
+<div class="max-w-md mx-auto">
+  <!-- File Upload dengan Drag & Drop -->
+  <div class="space-y-2">
+    <label class="block text-sm font-medium text-gray-700">Upload Dokumen</label>
+    
+    <div class="relative" id="drop-zone">
+      <!-- Input file yang tersembunyi -->
+      <input type="file" id="file-upload" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+      
+      <!-- Tampilan custom -->
+      <div class="flex items-center border border-gray-300 rounded-md bg-white hover:bg-gray-50 transition-colors">
+        <!-- Tombol -->
+        <div class="px-4 py-2 bg-gray-100 border-r border-gray-300 text-sm font-medium text-gray-700 rounded-l-md">
+          Pilih File
+        </div>
+        
+        <!-- Nama file -->
+        <div class="px-3 py-2 text-sm text-gray-500 truncate flex-1" id="file-name-display">
+          Tidak ada file dipilih
+        </div>
+      </div>
+    </div>
+    
+    <!-- Info format file -->
+    <p class="text-xs text-gray-500">
+      Seret file ke sini atau klik untuk memilih (PDF maks. 10MB)
+    </p>
+    
+    <!-- Preview file (opsional) -->
+    <div id="file-preview" class="hidden mt-2 p-2 bg-blue-50 rounded text-sm text-blue-800">
+      File terpilih: <span id="selected-file-name"></span>
+    </div>
+  </div>
+</div>
 
-                            <!-- Input file transparan -->
-                            <input type="file" name="file" accept="application/pdf" id="file-upload"
-                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-
-                            <!-- Area drag & drop -->
-                            <div class="w-full md:w-1/2 lg:w-1/3 mx-auto border border-gray-200 rounded-lg p-4 text-center transition-shadow hover:shadow-lg bg-white/80">
-                                <div class="flex flex-col items-center">
-                                    <svg class="w-8 h-8 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4 4v16h16V4H4zm4 8h8m-4-4v8"></path>
-                                    </svg>
-                                    <p class="text-gray-500 text-sm mb-1">
-                                        <span class="font-semibold text-blue-600 hover:text-blue-500">Klik untuk upload</span>
-                                        atau drag & drop
-                                    </p>
-                                    <p class="text-xs text-gray-400">PDF maksimal 10MB</p>
-                                </div>
-                            </div>
-
-                            <!-- Preview nama file -->
-                            <div id="file-name" class="mt-2 text-sm text-gray-600 hidden">
-                                <span class="flex items-center">
-                                    <svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <span id="selected-file-name"></span>
-                                </span>
-                            </div>
-
-                            <p class="text-xs text-gray-500 mt-2">Format yang didukung: PDF (Maksimal 10MB)</p>
-                        </div>
-                    </div>
                 <!-- Action Buttons -->
                 <div class="flex justify-center mt-8 pt-6 border-t border-gray-200">
                     <button type="submit" 
@@ -243,33 +237,36 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    // SweetAlert untuk notifikasi sukses
 document.addEventListener('DOMContentLoaded', function() {
+            @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            confirmButtonText: 'OK'
+        });
+        @endif
     const fileInput = document.getElementById('file-upload');
-    const fileName = document.getElementById('file-name');
+    const dropZone = document.getElementById('drop-zone');
+    const fileNameDisplay = document.getElementById('file-name-display');
+    const filePreview = document.getElementById('file-preview');
     const selectedFileName = document.getElementById('selected-file-name');
     
+    // Handle file selection
     fileInput.addEventListener('change', function(e) {
         if (e.target.files.length > 0) {
             const file = e.target.files[0];
-            selectedFileName.textContent = file.name;
-            fileName.classList.remove('hidden');
-        } else {
-            fileName.classList.add('hidden');
+            updateFileDisplay(file);
         }
     });
     
     // Drag and drop functionality
-    const dropZone = fileInput.parentElement;
-    
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
         dropZone.addEventListener(eventName, preventDefaults, false);
     });
-    
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
     
     ['dragenter', 'dragover'].forEach(eventName => {
         dropZone.addEventListener(eventName, highlight, false);
@@ -279,15 +276,20 @@ document.addEventListener('DOMContentLoaded', function() {
         dropZone.addEventListener(eventName, unhighlight, false);
     });
     
-    function highlight(e) {
-        dropZone.classList.add('border-blue-500', 'bg-blue-100');
-    }
-    
-    function unhighlight(e) {
-        dropZone.classList.remove('border-blue-500', 'bg-blue-100');
-    }
-    
     dropZone.addEventListener('drop', handleDrop, false);
+    
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    function highlight() {
+        dropZone.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50');
+    }
+    
+    function unhighlight() {
+        dropZone.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50');
+    }
     
     function handleDrop(e) {
         const dt = e.dataTransfer;
@@ -295,10 +297,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (files.length > 0) {
             fileInput.files = files;
-            const file = files[0];
-            selectedFileName.textContent = file.name;
-            fileName.classList.remove('hidden');
+            updateFileDisplay(files[0]);
         }
+    }
+    
+    function updateFileDisplay(file) {
+        selectedFileName.textContent = file.name;
+        fileNameDisplay.textContent = file.name;
+        fileNameDisplay.classList.remove('text-gray-500');
+        fileNameDisplay.classList.add('text-gray-700', 'font-medium');
+        filePreview.classList.remove('hidden');
     }
 });
 </script>
