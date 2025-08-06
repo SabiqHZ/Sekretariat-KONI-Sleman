@@ -48,7 +48,7 @@ class AdministrasiController extends Controller
             $query->orderBy('created_at', 'desc');
         }
         
-        $surat = $query->paginate(10)->withQueryString();
+        $surat = $query->paginate(15)->withQueryString();
         $isSupervisor = Auth::user()->role === 'supervisor';
         
         return view('administrasi.surat.index', compact('surat', 'isSupervisor'));

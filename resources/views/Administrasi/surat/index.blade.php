@@ -41,7 +41,7 @@
         </div>
         
         <!-- Action Buttons -->
-        @if(!isset($isSupervisor))
+        @if(auth()->user()->role === 'administrasi')
         <div class="flex flex-col sm:flex-row gap-3">
             <button type="button" onclick="location.href='{{ route('administrasi.surat.create') }}'"
                 class="flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all text-sm">
