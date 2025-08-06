@@ -5,9 +5,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AsetMiddleware;
 use App\Http\Middleware\KeuanganMiddleware;
 use App\Http\Middleware\AdministrasiMiddleware;
+use App\Http\Middleware\SupervisorMiddleware;
 use App\Http\Controllers\AdministrasiController;
+use App\Http\Controllers\KeuanganController;
+use App\Http\Controllers\AsetController;
 use App\Http\Controllers\GuestSuratController;
 use App\Http\Controllers\JenisSuratController;
+use App\Exports\SuratExport;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Style\Supervisor;
 
 Route::get('/', function () {
     return view('welcome');
@@ -58,6 +64,18 @@ Route::get('/keuangan/dashboard', function () {
 
 
 
+Route::get('/supervisor/dashboard', function () {
+    return view('supervisor.dashboard');
+})->middleware(['auth', 'verified', SupervisorMiddleware::class])->name('supervisor.dashboard');
+
+
+
+
+
+
+
+
+
 // Guest Routes
 Route::prefix('guest')->name('guest.')->group(function () {
     Route::get('/surat', [GuestSuratController::class, 'create'])->name('surat.create');
@@ -65,18 +83,9 @@ Route::prefix('guest')->name('guest.')->group(function () {
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+Route::get('/surat/export', function() {
+    return Excel::download(new SuratExport, 'data_surat.xlsx');
+})->name('surat.export');
 
 
 
@@ -85,6 +94,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])
+    ->name('profile.password');
+    
 });
 
 require __DIR__.'/auth.php';

@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 use App\Models\Surats;
 use App\Models\JenisSurat;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
 
-class AdministrasiController extends Controller {
+class AdministrasiController extends Controller 
+{
+
     public function index(Request $request)
     {
         $query = Surats::with('jenis');
         
-        // Filter berdasarkan guest
+        // Filter based on guest
         if ($request->has('show_guest')) {
             $query->where('is_from_guest', true);            
         }
@@ -31,11 +33,11 @@ class AdministrasiController extends Controller {
             $column = $request->input('sort');
             $order = $request->input('order', 'asc');
             
-            // Mapping untuk field yang benar
             $sortColumns = [
                 'tanggal_surat' => 'tanggal_surat',
                 'tanggal_masuk' => 'tanggal_masuk', 
-                'jenis_surat_id' => 'jenis_surat_id'
+                'jenis_surat_id' => 'jenis_surat_id',
+                'nomor_surat' => 'nomor_surat',
             ];
             
             if (array_key_exists($column, $sortColumns)) {
@@ -46,10 +48,10 @@ class AdministrasiController extends Controller {
             $query->orderBy('created_at', 'desc');
         }
         
-        // Pagination dengan 10 data per halaman
         $surat = $query->paginate(10)->withQueryString();
+        $isSupervisor = Auth::user()->role === 'supervisor';
         
-        return view('administrasi.surat.index', compact('surat'));
+        return view('administrasi.surat.index', compact('surat', 'isSupervisor'));
     }
 
     public function dashboard()
@@ -58,23 +60,32 @@ class AdministrasiController extends Controller {
         return view('administrasi.dashboard', compact('totalSurat'));
     }
 
-    public function create() {
+    public function create() 
+    {
+        if (Auth::user()->role === 'supervisor') {
+            abort(403, 'Unauthorized action.');
+        }
+        
         $types = JenisSurat::all();
         return view('administrasi.surat.create', compact('types'));
     }
 
-    public function store(Request $request) {
+    public function store(Request $request) 
+    {
+        if (Auth::user()->role === 'supervisor') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $data = $request->validate([
             'nomor_surat' => 'required|string|max:255',
             'tanggal_surat' => 'required|date',
             'tanggal_masuk' => 'required|date',
             'pengirim' => 'required|string|max:255',
-            'keterangan' => 'required|string|max:500', // Diperbesar untuk keterangan panjang
+            'keterangan' => 'required|string|max:500',
             'jenis_surat_id' => 'required|exists:jenis_surat,id',
             'file' => 'nullable|file|mimes:pdf|max:2048'
         ]);
 
-        // Format tanggal
         $data['tanggal_surat'] = date('Y-m-d', strtotime($request->tanggal_surat));
         $data['tanggal_masuk'] = date('Y-m-d', strtotime($request->tanggal_masuk));
 
@@ -82,25 +93,35 @@ class AdministrasiController extends Controller {
             $data['file_path'] = $request->file('file')->store('surat_pdfs', 'public');
         }
 
-        $data['created_by'] = auth()->id();
+        $data['created_by'] = Auth::id();
         Surats::create($data);
 
         return redirect()->route('administrasi.surat.index')->with('success', 'File surat berhasil diunggah.');
     }
 
-    public function edit(Surats $surat) {
+    public function edit(Surats $surat) 
+    {
+        if (Auth::user()->role === 'supervisor') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $types = JenisSurat::all();
         return view('administrasi.surat.edit', compact('surat', 'types'));
     }
 
-    public function update(Request $request, Surats $surat) {
+    public function update(Request $request, Surats $surat) 
+    {
+        if (Auth::user()->role === 'supervisor') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $data = $request->validate([
             'jenis_surat_id' => 'required|exists:jenis_surat,id',
             'nomor_surat' => 'required|string|max:255',
             'tanggal_surat' => 'required|date',
             'tanggal_masuk' => 'required|date',
             'pengirim' => 'required|string|max:255',
-            'keterangan' => 'required|string|max:500', // Diperbesar untuk keterangan panjang
+            'keterangan' => 'required|string|max:500',
             'file' => 'nullable|file|mimes:pdf|max:2048'
         ]);
 
@@ -116,7 +137,12 @@ class AdministrasiController extends Controller {
         return redirect()->route('administrasi.surat.index')->with('success', 'Data surat berhasil diperbarui.');
     }
 
-    public function destroy(Surats $surat) {
+    public function destroy(Surats $surat) 
+    {
+        if (Auth::user()->role === 'supervisor') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $surat->delete();
         return back()->with('success', 'Data surat berhasil dihapus.');
     }

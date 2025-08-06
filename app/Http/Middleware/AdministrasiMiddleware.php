@@ -18,8 +18,7 @@ class AdministrasiMiddleware
     {
         if ($request->user()) {
 
-            if( $request->user()->role === 'administrasi') {
-                
+            if (in_array($request->user()->role, ['administrasi', 'supervisor'])) {
                 
                 return $next($request);
             }
@@ -39,4 +38,5 @@ class AdministrasiMiddleware
         return to_route('Beranda');
 
     }
+    
 }

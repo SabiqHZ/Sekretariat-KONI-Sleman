@@ -41,6 +41,7 @@
         </div>
         
         <!-- Action Buttons -->
+        @if(!isset($isSupervisor))
         <div class="flex flex-col sm:flex-row gap-3">
             <button type="button" onclick="location.href='{{ route('administrasi.surat.create') }}'"
                 class="flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all text-sm">
@@ -58,8 +59,8 @@
                 Tambah Jenis
             </button>
         </div>
+        @endif
     </div>
-
     <!-- Form Filter - Revisi untuk alignment sempurna -->
     <form method="GET" action="{{ route('administrasi.surat.index') }}" class="space-y-4 md:space-y-0">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
@@ -82,6 +83,8 @@
                     <option value="tanggal_surat" {{ request('sort') == 'tanggal_surat' ? 'selected' : '' }}>Tanggal Surat</option>
                     <option value="tanggal_masuk" {{ request('sort') == 'tanggal_masuk' ? 'selected' : '' }}>Tanggal Masuk</option>
                     <option value="jenis_surat_id" {{ request('sort') == 'jenis_surat_id' ? 'selected' : '' }}>Jenis Surat</option>
+                    <option value="pengirim" {{ request('sort') == 'pengirim' ? 'selected' : '' }}>Pengirim</option>
+                    <option value="nomor_surat" {{ request('sort') == 'nomor_surat' ? 'selected' : '' }}>Nomor Surat</option>
                 </select>
             </div>
 
@@ -143,9 +146,9 @@
                     <tbody class="divide-y divide-gray-200">
                         @foreach($surat as $s)
                             <tr class="@if(isset($s->is_from_guest) && $s->is_from_guest) guest-row @endif transition-colors duration-200 hover:bg-blue-50/50">
-    <!-- Kolom-kolom tabel -->
-    <!-- Nomor Surat -->
-    <td class="px-6 py-4 text-sm font-medium {{ isset($s->is_from_guest) && $s->is_from_guest ? 'text-orange-900' : 'text-gray-900' }}">
+                             <!-- Kolom-kolom tabel -->
+                                <!-- Nomor Surat -->
+                                <td class="px-6 py-4 text-sm font-medium {{ isset($s->is_from_guest) && $s->is_from_guest ? 'text-orange-900' : 'text-gray-900' }}">
                                     {{ $s->nomor_surat }}
                                 </td>
                                 
@@ -198,20 +201,9 @@
                                         <span class="text-gray-400 italic">-</span>
                                     @endif
                                 </td>
-                                
                                 <!-- Aksi -->
                                 <td class="px-6 py-4 text-sm text-center">
                                     <div class="flex items-center justify-center space-x-3">
-                                        <!-- Edit -->
-                                        <a href="{{ route('administrasi.surat.edit',$s) }}"
-                                            class="inline-flex items-center px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors duration-200">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                            </svg>
-                                            Edit
-                                        </a>
-                                        
-                                        <!-- PDF -->
                                         @if($s->file_path)
                                             <a href="{{ Storage::url($s->file_path) }}" target="_blank"
                                                 class="inline-flex items-center px-3 py-1.5 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors duration-200">
@@ -228,6 +220,17 @@
                                                 Empty
                                             </span>
                                         @endif
+                                        @if(auth()->user()->role === 'administrasi')
+                                        <!-- Edit -->
+                                        <a href="{{ route('administrasi.surat.edit',$s) }}"
+                                            class="inline-flex items-center px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors duration-200">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                            </svg>
+                                            Edit
+                                        </a>
+                                        
+                                        <!-- PDF -->
                                         <!-- Hapus -->
                                         <form action="{{ route('administrasi.surat.destroy',$s) }}" method="POST" class="inline delete-form">
                                             @csrf @method('DELETE')
@@ -243,12 +246,21 @@
                                     </div>
                                 </td>
                             </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
-
+       <div class="flex justify-between mb-4">
+    <button onclick="window.location.href='{{ route('surat.export') }}'"
+            class="flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all text-sm">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+        </svg>
+        Export Excel
+    </button>
+</div>
         <!-- Pagination -->
         @if($surat->hasPages())
             <div class="mt-8">

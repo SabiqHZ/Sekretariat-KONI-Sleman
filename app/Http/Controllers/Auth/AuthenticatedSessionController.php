@@ -36,6 +36,8 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('keuangan.dashboard');
         } elseif ($user->role === 'aset') {
             return redirect()->route('aset.dashboard');
+        } elseif ($user->role === 'supervisor') {
+            return redirect()->route('supervisor.dashboard');
 }
 
 return redirect('/'); // fallback

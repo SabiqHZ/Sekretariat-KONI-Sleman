@@ -512,6 +512,7 @@
 
         <!-- JavaScript for dropdown functionality -->
         <script>
+            
             function toggleDropdown() {
                 const dropdown = document.getElementById('profileDropdown');
                 const arrow = document.getElementById('dropdownArrow');

@@ -405,7 +405,8 @@
     <header>
         <h1>Sekretariat KONI Sleman</h1>
         <nav>
-            <button class="btn" onclick="scrollToSection('home')">Home</button>
+            
+            <button class="btn {{ auth()->check() ? 'hidden' : '' }}" onclick="scrollToSection('home')">Home</button>
             <button class="btn" onclick="scrollToSection('tentang')">Tentang</button>
             <button class="btn" onclick="scrollToSection('informasi')">Informasi</button>
             <div>
@@ -420,6 +421,8 @@
                                 $dashboardRoute = route('keuangan.dashboard');
                             } elseif ($role === 'aset') {
                                 $dashboardRoute = route('aset.dashboard');
+                            } elseif ($role === 'supervisor') {
+                                $dashboardRoute = route('supervisor.dashboard');
                             }
                         @endphp
 
