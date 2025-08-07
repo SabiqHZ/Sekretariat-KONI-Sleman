@@ -52,7 +52,7 @@
             </button>
             
             <button type="button" onclick="location.href='{{ route('administrasi.jenis-surat.create') }}'"
-                class="flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all text-sm">
+                class="flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-emerald-700 transition-all text-sm">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                 </svg>
@@ -158,7 +158,7 @@
                                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                                         </svg>
-                                        {{ $s->jenis->jenis_surat }}
+                                        {{ $s->jenis->nama_jenis_surat }}
                                         @if(isset($s->is_from_guest) && $s->is_from_guest)
                                             <span class="ml-1 px-1.5 py-0.5 bg-orange-200 text-orange-900 rounded text-xs font-bold">GUEST</span>
                                         @endif
@@ -235,7 +235,7 @@
                                         <form action="{{ route('administrasi.surat.destroy',$s) }}" method="POST" class="inline delete-form">
                                             @csrf @method('DELETE')
                                             <button type="button" class="delete-btn inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors duration-200"
-                                                    data-surat-jenissurat="{{ $s->jenis->jenis_surat }}"
+                                                    data-surat-jenissurat="{{ $s->jenis->nama_jenis_surat }}"
                                                     data-surat-pengirim="{{ $s->Pengirim }}">
                                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>

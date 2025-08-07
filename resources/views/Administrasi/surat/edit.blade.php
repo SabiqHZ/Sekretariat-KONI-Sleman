@@ -49,7 +49,7 @@
                             <option value="">Pilih Jenis Surat</option>
                             @foreach($types as $type)
                                 <option value="{{ $type->id }}" {{ $surat->jenis_surat_id == $type->id ? 'selected' : '' }}>
-                                    {{ $type->jenis_surat }}
+                                    {{ $type->nama_jenis_surat }}
                                 </option>
                             @endforeach
                         </select>

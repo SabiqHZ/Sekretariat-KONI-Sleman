@@ -6,6 +6,7 @@ use App\Models\JenisSurat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class AdministrasiController extends Controller 
 {
@@ -57,7 +58,10 @@ class AdministrasiController extends Controller
     public function dashboard()
     {
         $totalSurat = Surats::count();
-        return view('administrasi.dashboard', compact('totalSurat'));
+        $suratFromGuest = DB::table('surats')
+                      ->where('is_from_guest', 1)
+                      ->count();
+        return view('administrasi.dashboard', compact('totalSurat', 'suratFromGuest'));
     }
 
     public function create() 

@@ -31,15 +31,15 @@ class JenisSuratController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'jenis_surat' => [
+            'nama_jenis_surat' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('jenis_surat'),
+                Rule::unique('jenis_surat', 'nama_jenis_surat'),
             ],
         ]);
 
-        JenisSurat::create($request->only('jenis_surat'));
+        JenisSurat::create($request->only('nama_jenis_surat'));
 
         return redirect()->route('administrasi.dashboard')
             ->with('success', 'Jenis Surat berhasil ditambahkan!');
@@ -67,17 +67,17 @@ class JenisSuratController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'jenis_surat' => [
+            'nama_jenis_surat' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('jenis_surat')->ignore($id),
+                Rule::unique('jenis_surat', 'nama_jenis_surat')->ignore($id),
             ],
 
         ]);
 
         $jenisSurat = JenisSurat::findOrFail($id);
-        $jenisSurat->update($request->only('jenis_surat'));
+        $jenisSurat->update($request->only('nama_jenis_surat'));
 
 
         return redirect()->route('administrasi.index')

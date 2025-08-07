@@ -9,11 +9,12 @@
             @csrf
             
             <div class="mb-4">
-                <label for="jenis_surat" class="block text-sm font-medium text-gray-700 mb-2">Jenis Surat</label>
-                <input type="text" name="jenis_surat" id="jenis_surat" 
-                       class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                       required>
-                @error('jenis_surat')
+                <label for="nama_jenis_surat" class="block text-sm font-medium text-gray-700 mb-2">Jenis Surat</label>
+                <input type="text" name="nama_jenis_surat" id="nama_jenis_surat"
+                    class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                    value="{{ old('nama_jenis_surat') }}"
+                    required>
+                @error('nama_jenis_surat')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>

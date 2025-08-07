@@ -37,6 +37,7 @@
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Jenis Surat -->
+                    
                     <div class="lg:col-span-2">
                         <label class="block text-sm font-semibold text-gray-700 mb-2">
                             <span class="flex items-center">
@@ -49,7 +50,7 @@
                         <select name="jenis_surat_id" class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white">
                             <option value="">Pilih Jenis Surat</option>
                             @foreach($types as $type)
-                                <option value="{{ $type->id }}">{{ $type->jenis_surat }}</option>
+                                <option value="{{ $type->id }}">{{ $type->nama_jenis_surat }}</option>
                             @endforeach
                         </select>
                     </div>

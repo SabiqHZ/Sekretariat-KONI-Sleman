@@ -61,9 +61,9 @@
                     <div>
                         <h3 class="text-lg font-semibold text-gray-800 mb-2">Surat Masuk</h3>
                         <p class="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-800 bg-clip-text text-transparent">
-                            {{ $suratMasuk ?? 0 }}
+                            {{ $suratFromGuest }}
                         </p>
-                        <p class="text-sm text-gray-600 mt-1">Surat dari guest/pengunjung</p>
+                        <p class="text-sm text-gray-600 mt-1">Surat dari guest/pengunjung</p>   
                     </div>
                     <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 p-4 rounded-2xl">
                         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

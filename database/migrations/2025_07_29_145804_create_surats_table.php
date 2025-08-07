@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('surats', function (Blueprint $table) {
             $table->id();
             $table->string('nomor_surat');
-            $table->string('jenis_surat');
+            $table->unsignedBigInteger('jenis_surat_id');
+            $table->foreign('jenis_surat_id')->references('id')->on('jenis_surat')->onDelete('cascade');
             $table->string('Pengirim');
             $table->date('tanggal_surat');
             $table->date('tanggal_masuk')->nullable();

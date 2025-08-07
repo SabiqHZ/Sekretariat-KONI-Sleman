@@ -9,7 +9,7 @@ class JenisSurat extends Model
     protected $table = 'jenis_surat';
 
     protected $fillable = [
-        'jenis_surat',
+        'nama_jenis_surat',
     ];
 
     public function surats()
