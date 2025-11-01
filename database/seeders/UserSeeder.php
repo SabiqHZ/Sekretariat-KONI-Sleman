@@ -2,47 +2,36 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
-                DB::table('users')->insert([
-            [
-                'name' => 'Administrasi',
-                'email' => 'administrasi@gmail.com',
-                'password' => Hash::make('12345678'),
-                'role' => 'administrasi',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Admin Keuangan',
-                'email' => 'keuangan@gmail.com',
-                'password' => Hash::make('12345678'),
-                'role' => 'keuangan',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Admin Aset',
-                'email' => 'aset@gmail.com',
-                'password' => Hash::make('12345678'),
-                'role' => 'aset',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Supervisor',
-                'email' => 'supervisor@gmail.com',
-                'password' => Hash::make('12345678'),
-                'role' => 'supervisor',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+        User::create([
+            'name' => 'Administrasi',
+            'password' => Hash::make('admin12345'),
+            'role' => 'administrasi',
+        ]);
+
+        User::create([
+            'name' => 'Admin Keuangan',
+            'password' => Hash::make('keuangan12345'),
+            'role' => 'keuangan',
+        ]);
+
+        User::create([
+            'name' => 'Admin Aset',
+            'password' => Hash::make('aset12345'),
+            'role' => 'aset',
+        ]);
+
+        User::create([
+            'name' => 'Supervisor',
+            'password' => Hash::make('supervisor12345'),
+            'role' => 'supervisor',
         ]);
     }
 }
