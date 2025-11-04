@@ -1,171 +1,506 @@
-@extends('layouts.app')
-@section('title', 'Dashboard Administrasi')
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="csrf-token" content="{{ csrf_token() }}" />
+        <title>KONI Sleman — Dashboard Administrasi</title>
+        <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon" />
 
-@section('header')
-<div class="flex items-center justify-between">
-    <div class="flex items-center space-x-4">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </div>
-</div>
-@endsection
-
-@section('content')
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <!-- Welcome Section -->
-        <div class="mb-8">
-            <div class="text-center">
-                <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
-                    Selamat Datang, Administrasi!
-                </h1>
-                <p class="text-gray-600 text-lg">
-                    Kelola dan monitor sistem administrasi surat dengan mudah
-                </p>
-            </div>
-        </div>
-
-        <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <!-- Total Surat Card -->
-            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Total Surat</h3>
-                        <p class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                            {{ $totalSurat }}
-                        </p>
-                        <p class="text-sm text-gray-600 mt-1">Semua surat dalam sistem</p>
-                    </div>
-                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-4 rounded-2xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                    </div>
-                </div>
-                <div class="mt-4 bg-blue-50 rounded-xl p-3">
-                    <div class="flex items-center text-blue-700">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                        </svg>
-                        <span class="text-sm font-medium">Statistik keseluruhan</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Surat Masuk Card -->
-            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Surat Masuk</h3>
-                        <p class="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-800 bg-clip-text text-transparent">
-                            {{ $suratFromGuest }}
-                        </p>
-                        <p class="text-sm text-gray-600 mt-1">Surat dari guest/pengunjung</p>   
-                    </div>
-                    <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 p-4 rounded-2xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                        </svg>
-                    </div>
-                </div>
-                <div class="mt-4 bg-emerald-50 rounded-xl p-3">
-                    <div class="flex items-center text-emerald-700">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 12l2 2 4-4"></path>
-                        </svg>
-                        <span class="text-sm font-medium">Perlu ditindaklanjuti</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 mb-8">
-            <h3 class="text-xl font-semibold text-gray-800 mb-6 flex items-center">
-                <svg class="w-6 h-6 mr-3 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                </svg>
-                Aksi Cepat
-            </h3>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Lihat Semua Surat -->
-                <a href="{{ route('administrasi.surat.index') }}" 
-                   class="group bg-gradient-to-r from-blue-500 to-blue-600 text-black p-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl block">
-                    <div class="flex items-center justify-between">
-                        <div class="flex-1">
-                            <h4 class="font-semibold text-lg mb-1">Lihat Surat</h4>
-                            <p class="text-blue-100 text-sm">Kelola semua surat</p>
-                        </div>
-                        <div class="ml-4">
-                            <svg class="w-8 h-8 text-blue-200 group-hover:text-white transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                            </svg>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            brand: {
+                                yellow: "#f59e0b",
+                                light: "#fef3c7",
+                                pale: "#fff7ed",
+                                ink: "#334155",
+                            },
+                        },
+                        fontFamily: {
+                            sans: [
+                                "Inter",
+                                "ui-sans-serif",
+                                "system-ui",
+                                "Segoe UI",
+                                "Roboto",
+                                "Ubuntu",
+                                "Helvetica",
+                                "Arial",
+                            ],
+                        },
+                        boxShadow: {
+                            soft: "0 14px 38px rgba(15,23,42,.08)",
+                        },
+                    },
+                },
+            };
+        </script>
+        <style>
+            body {
+                font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+            }
+            .container {
+                max-width: 1220px;
+            }
+            .scroll-slim {
+                scrollbar-width: thin;
+                scrollbar-color: #e2e8f0 transparent;
+            }
+            .scroll-slim::-webkit-scrollbar {
+                height: 8px;
+                width: 8px;
+            }
+            .scroll-slim::-webkit-scrollbar-thumb {
+                background: #e2e8f0;
+                border-radius: 999px;
+            }
+            .card-grad {
+                background: linear-gradient(135deg, #fff, #fff4 40%),
+                    linear-gradient(135deg, #fef3c7, #fff7ed);
+            }
+            .ring-brand {
+                box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+            }
+            .glass {
+                backdrop-filter: blur(10px);
+            }
+            .tag {
+                box-shadow: inset 0 0 0 1px rgba(253, 224, 71, 0.6);
+            }
+        </style>
+    </head>
+    <body class="bg-white text-brand-ink">
+        <div class="min-h-screen grid" style="grid-template-columns: 260px 1fr">
+            <aside class="bg-white border-r border-slate-100 p-4 flex flex-col gap-3">
+                <a href="{{ route('administrasi.dashboard') }}" class="flex items-center gap-3">
+                    <span
+                        class="h-10 w-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-yellow-400 to-amber-500 text-white shadow-soft"
+                        >🏅</span
+                    >
+                    <div class="leading-tight">
+                        <div class="font-extrabold text-slate-900">KONI Sleman</div>
+                        <div class="text-[11px] text-slate-500 tracking-wide">
+                            Dashboard Administrasi
                         </div>
                     </div>
                 </a>
 
-                <!-- Upload Surat Baru -->
-                <a href="{{ route('administrasi.surat.create') }}" 
-                   class="group bg-gradient-to-r from-emerald-500 to-emerald-600 text-black p-4 rounded-xl hover:from-emerald-600 hover:to-emerald-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl block">
-                    <div class="flex items-center justify-between">
-                        <div class="flex-1">
-                            <h4 class="font-semibold text-lg mb-1">Upload Surat</h4>
-                            <p class="text-emerald-100 text-sm">Tambah surat baru</p>
-                        </div>
-                        <div class="ml-4">
-                            <svg class="w-8 h-8 text-emerald-200 group-hover:text-white transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </a>
+                <nav class="mt-2 text-[15px] flex-1">
+                    <a
+                        class="flex items-center gap-3 px-3 py-2 rounded-lg bg-amber-50 text-amber-700 ring-brand"
+                        href="{{ route('administrasi.dashboard') }}"
+                    >
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 3 1.5 9l10.5 6 10.5-6L12 3Zm-7.5 9V21l7.5 3 7.5-3v-9" />
+                        </svg>
+                        Dasbor
+                    </a>
+                    <a
+                        class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50"
+                        href="{{ route('administrasi.surat.index') }}"
+                    >
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M21 6.75V19.5a.75.75 0 0 1-1.125.65L12 16.221l-7.875 3.93A.75.75 0 0 1 3 19.5V6.75l9-4.5 9 4.5Z"
+                            />
+                        </svg>
+                        Arsip Surat
+                    </a>
+                    <a
+                        class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50"
+                        href="{{ route('administrasi.surat.create') }}"
+                    >
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 5.25a.75.75 0 0 1 .75.75v5.25h5.25a.75.75 0 0 1 0 1.5H12.75V18a.75.75 0 0 1-1.5 0v-5.25H6a.75.75 0 0 1 0-1.5h5.25V6a.75.75 0 0 1 .75-.75Z" />
+                        </svg>
+                        Unggah Surat
+                    </a>
+                    <a
+                        class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50"
+                        href="{{ route('administrasi.jenis-surat.index') }}"
+                    >
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M6 3.75h12l1.5 6H4.5L6 3.75Zm-1.5 7.5h15v9H4.5v-9Z"
+                            />
+                        </svg>
+                        Jenis Surat
+                    </a>
+                </nav>
 
-                <!-- Laporan -->
-                <a href="#" 
-                   class="group bg-gradient-to-r from-purple-500 to-purple-600 text-black p-4 rounded-xl hover:from-purple-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl block">
-                    <div class="flex items-center justify-between">
-                        <div class="flex-1">
-                            <h4 class="font-semibold text-lg mb-1">Laporan</h4>
-                            <p class="text-purple-100 text-sm">Lihat statistik</p>
+                <div class="mt-auto p-3 rounded-xl bg-amber-50 border border-amber-100">
+                    <div class="text-xs text-amber-700">Sleman Tetap Ju4ra</div>
+                    <div class="text-[11px] text-amber-700/80">Sembada Luar Biasa</div>
+                </div>
+            </aside>
+
+            <main class="bg-white">
+                <header class="sticky top-0 z-40 bg-white/85 glass border-b border-slate-100">
+                    <div class="container mx-auto px-5 py-3 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <h1 class="text-lg font-extrabold text-slate-900">Dasbor Surat</h1>
+                            <span class="text-xs px-2 py-1 rounded-full bg-amber-100 text-amber-700 tag">Real-time</span>
                         </div>
-                        <div class="ml-4">
-                            <svg class="w-8 h-8 text-purple-200 group-hover:text-white transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                            </svg>
+                        <div class="flex items-center gap-3">
+                            <div class="hidden sm:block text-right">
+                                <div class="text-sm font-semibold text-slate-900">{{ auth()->user()->name }}</div>
+                                <div class="text-[12px] text-slate-500 uppercase tracking-wide">
+                                    {{ auth()->user()->role ?? 'Pengguna' }}
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <img
+                                    src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=f59e0b&color=fff"
+                                    class="h-9 w-9 rounded-full border border-amber-200"
+                                    alt="profil"
+                                />
+                            </div>
                         </div>
                     </div>
-                </a>
+                </header>
+
+                <section class="container mx-auto px-5 py-6 space-y-8">
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        <article class="card-grad rounded-2xl p-5 border border-amber-100 shadow-soft">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-slate-900 font-semibold">Total Surat</h3>
+                                <span class="text-amber-600">📄</span>
+                            </div>
+                            <div class="mt-3 text-3xl font-black text-slate-900">{{ number_format($totalSurat) }}</div>
+                            <div class="text-xs text-slate-500">{{ $guestRate }}% berasal dari tamu</div>
+                        </article>
+                        <article class="card-grad rounded-2xl p-5 border border-amber-100 shadow-soft">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-slate-900 font-semibold">Surat Tergarap</h3>
+                                <span class="text-amber-600">✅</span>
+                            </div>
+                            <div class="mt-3 text-3xl font-black text-slate-900">{{ number_format($suratSelesai) }}</div>
+                            <div class="text-xs text-slate-500">{{ $completionRate }}% dari total surat</div>
+                        </article>
+                        <article class="card-grad rounded-2xl p-5 border border-amber-100 shadow-soft">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-slate-900 font-semibold">Menunggu Proses</h3>
+                                <span class="text-amber-600">🗂️</span>
+                            </div>
+                            <div class="mt-3 text-3xl font-black text-slate-900">{{ number_format($suratBelum) }}</div>
+                            <div class="text-xs text-slate-500">Perlu tindak lanjut</div>
+                        </article>
+                        <article class="card-grad rounded-2xl p-5 border border-amber-100 shadow-soft">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-slate-900 font-semibold">Surat Tamu</h3>
+                                <span class="text-amber-600">👥</span>
+                            </div>
+                            <div class="mt-3 text-3xl font-black text-slate-900">{{ number_format($suratFromGuest) }}</div>
+                            <div class="text-xs text-slate-500">Terhubung dengan layanan publik</div>
+                        </article>
+                    </div>
+
+                    <div class="grid lg:grid-cols-5 gap-5">
+                        <div class="lg:col-span-3 rounded-2xl border border-slate-200 p-5">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="font-semibold text-slate-900">Surat Masuk per Bulan</h3>
+                                <button
+                                    id="refreshLine"
+                                    class="px-3 py-1.5 text-xs rounded-lg border border-slate-200 hover:bg-slate-50"
+                                >
+                                    Refresh
+                                </button>
+                            </div>
+                            <canvas id="lineChart" height="120"></canvas>
+                        </div>
+                        <div class="lg:col-span-2 rounded-2xl border border-slate-200 p-5">
+                            <h3 class="font-semibold text-slate-900 mb-3">Distribusi Surat per Jenis</h3>
+                            <canvas id="barChart" height="120"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-200 overflow-hidden">
+                        <div class="p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white">
+                            <div class="flex items-center gap-2">
+                                <div class="relative">
+                                    <input
+                                        id="filterSearch"
+                                        class="w-[240px] rounded-lg bg-white border border-slate-200 pl-9 pr-3 py-2 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-300"
+                                        placeholder="Cari surat…"
+                                        type="search"
+                                    />
+                                    <svg
+                                        class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
+                                        viewBox="0 0 24 24"
+                                        fill="currentColor"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M10.5 3.75a6.75 6.75 0 104.237 12.006l4.003 4.004a.75.75 0 101.06-1.06l-4.004-4.004A6.75 6.75 0 0010.5 3.75z"
+                                        />
+                                    </svg>
+                                </div>
+                                <select
+                                    id="filterStatus"
+                                    class="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                                >
+                                    <option value="">Semua Status</option>
+                                    <option value="completed">Tergarap</option>
+                                    <option value="pending">Belum Tergarap</option>
+                                    <option value="guest">Surat Tamu</option>
+                                </select>
+                                <select
+                                    id="filterJenis"
+                                    class="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                                >
+                                    <option value="">Semua Jenis</option>
+                                    @foreach ($jenisOptions as $jenis)
+                                        <option value="{{ $jenis->jenis_surat }}">{{ $jenis->jenis_surat }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <a
+                                    href="{{ route('administrasi.surat.create') }}"
+                                    class="px-4 py-2 rounded-lg bg-amber-500 text-white hover:opacity-90 shadow-soft"
+                                >
+                                    + Tambah Surat
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto scroll-slim bg-white">
+                            <table class="min-w-full text-sm">
+                                <thead class="bg-amber-50/60 text-slate-700">
+                                    <tr>
+                                        <th class="text-left px-4 py-3 w-12">Selesai</th>
+                                        <th class="text-left px-4 py-3">Nomor Surat</th>
+                                        <th class="text-left px-4 py-3">Jenis</th>
+                                        <th class="text-left px-4 py-3">Pengirim</th>
+                                        <th class="text-left px-4 py-3">Tanggal Masuk</th>
+                                        <th class="text-left px-4 py-3">Status</th>
+                                        <th class="text-right px-4 py-3">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody" class="divide-y divide-slate-100">
+                                    <tr>
+                                        <td colspan="7" class="px-4 py-6 text-center text-slate-500">Memuat data…</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <div id="toast" class="fixed bottom-4 right-4 z-50 hidden">
+            <div class="bg-white border border-slate-200 rounded-xl px-4 py-3 shadow-soft flex items-center gap-2">
+                <span class="h-2 w-2 rounded-full bg-amber-500"></span>
+                <span id="toastText" class="text-sm">Tersimpan.</span>
             </div>
         </div>
 
-        <!-- Recent Activity -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
-            <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                <svg class="w-6 h-6 mr-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                Aktivitas Terbaru
-            </h3>
-            
-            <div class="space-y-3">
-                <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                    <div class="w-2 h-2 bg-green-500 rounded-full mr-3 flex-shrink-0"></div>
-                    <span class="text-gray-700 flex-1">Sistem siap digunakan</span>
-                    <span class="text-sm text-gray-500">Hari ini</span>
-                </div>
-                
-                <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                    <div class="w-2 h-2 bg-blue-500 rounded-full mr-3 flex-shrink-0"></div>
-                    <span class="text-gray-700 flex-1">Dashboard administrasi aktif</span>
-                    <span class="text-sm text-gray-500">Sekarang</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            const SURAT_DATA = @json($tableData);
+            const MONTH_LABELS = @json($monthlyLabels);
+            const MONTH_COUNTS = @json($monthlyCounts);
+            const JENIS_LABELS = @json($jenisLabels);
+            const JENIS_SELESAI = @json($jenisSelesai);
+            const JENIS_BELUM = @json($jenisBelum);
+            const JENIS_GUEST = @json($jenisGuest);
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+            const baseSuratUrl = @json(url('administrasi/dashboard/surat'));
+
+            const tbody = document.getElementById('tbody');
+            const filterSearch = document.getElementById('filterSearch');
+            const filterStatus = document.getElementById('filterStatus');
+            const filterJenis = document.getElementById('filterJenis');
+
+            function statusBadge(item) {
+                if (item.is_completed) {
+                    return '<span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">Tergarap</span>';
+                }
+                if (item.is_from_guest) {
+                    return '<span class="px-2 py-1 rounded-full text-xs bg-amber-100 text-amber-700">Surat Tamu</span>';
+                }
+                return '<span class="px-2 py-1 rounded-full text-xs bg-slate-100 text-slate-700">Menunggu</span>';
+            }
+
+            function rowTemplate(item) {
+                const editUrl = `${baseSuratUrl}/${item.id}/edit`;
+                const pdfUrl = `${baseSuratUrl}/${item.id}/pdf`;
+                const toggleAction = `${baseSuratUrl}/${item.id}/toggle`;
+                const checked = item.is_completed ? 'checked' : '';
+                const guestClass = item.is_from_guest ? 'bg-amber-50/60' : '';
+                return `
+                <tr class="hover:bg-amber-50/30 ${guestClass}" data-id="${item.id}">
+                    <td class="px-4 py-3 align-top">
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" data-toggle="${toggleAction}" class="h-4 w-4 rounded border-slate-300 text-amber-500 focus:ring-amber-300" ${checked} />
+                        </label>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="font-semibold text-slate-900">${item.nomor_surat}</div>
+                        <div class="text-xs text-slate-500">${item.tanggal_surat || '-'}</div>
+                    </td>
+                    <td class="px-4 py-3">${item.jenis}</td>
+                    <td class="px-4 py-3">
+                        <div class="text-slate-900">${item.pengirim}</div>
+                        ${item.is_from_guest ? '<div class="text-xs text-amber-600">Pengunjung</div>' : ''}
+                    </td>
+                    <td class="px-4 py-3">${item.tanggal_masuk || '-'}</td>
+                    <td class="px-4 py-3">${statusBadge(item)}</td>
+                    <td class="px-4 py-3 text-right space-x-2">
+                        <a href="${editUrl}" class="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50">Edit</a>
+                        <a href="${pdfUrl}" class="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50">PDF</a>
+                    </td>
+                </tr>`;
+            }
+
+            function renderTable() {
+                const term = (filterSearch.value || '').toLowerCase();
+                const status = filterStatus.value;
+                const jenis = filterJenis.value;
+
+                const rows = SURAT_DATA.filter((item) => {
+                    const matchesTerm = !term || `${item.nomor_surat} ${item.pengirim} ${item.jenis}`.toLowerCase().includes(term);
+                    const matchesStatus =
+                        !status ||
+                        (status === 'completed' && item.is_completed) ||
+                        (status === 'pending' && !item.is_completed) ||
+                        (status === 'guest' && item.is_from_guest);
+                    const matchesJenis = !jenis || item.jenis === jenis;
+                    return matchesTerm && matchesStatus && matchesJenis;
+                })
+                    .map((item) => rowTemplate(item))
+                    .join('');
+
+                tbody.innerHTML = rows || '<tr><td colspan="7" class="px-4 py-6 text-center text-slate-500">Tidak ada data…</td></tr>';
+                bindCheckboxEvents();
+            }
+
+            function bindCheckboxEvents() {
+                tbody.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+                    checkbox.addEventListener('change', async (event) => {
+                        const url = checkbox.getAttribute('data-toggle');
+                        const row = checkbox.closest('tr');
+                        const suratId = Number(row?.dataset.id);
+                        const payload = { is_completed: checkbox.checked };
+                        try {
+                            const response = await fetch(url, {
+                                method: 'PATCH',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': csrfToken,
+                                    'Accept': 'application/json',
+                                },
+                                body: JSON.stringify(payload),
+                            });
+                            if (!response.ok) {
+                                throw new Error('Gagal memperbarui status');
+                            }
+                            const target = SURAT_DATA.find((item) => item.id === suratId);
+                            if (target) {
+                                target.is_completed = checkbox.checked;
+                            }
+                            toast('Status surat diperbarui');
+                            renderTable();
+                        } catch (error) {
+                            checkbox.checked = !checkbox.checked;
+                            toast('Terjadi kesalahan, coba lagi');
+                            console.error(error);
+                        }
+                    });
+                });
+            }
+
+            function toast(text) {
+                const toastEl = document.getElementById('toast');
+                document.getElementById('toastText').textContent = text;
+                toastEl.classList.remove('hidden');
+                clearTimeout(toastEl.dataset.timeout);
+                toastEl.dataset.timeout = setTimeout(() => toastEl.classList.add('hidden'), 1800);
+            }
+
+            filterSearch.addEventListener('input', renderTable);
+            filterStatus.addEventListener('change', renderTable);
+            filterJenis.addEventListener('change', renderTable);
+
+            renderTable();
+
+            const lineCtx = document.getElementById('lineChart');
+            const barCtx = document.getElementById('barChart');
+            const brandYellow = '#f59e0b';
+            const brandLight = '#fde68a';
+            const brandLine = '#eab308';
+
+            let lineChart = new Chart(lineCtx, {
+                type: 'line',
+                data: {
+                    labels: MONTH_LABELS,
+                    datasets: [
+                        {
+                            label: 'Surat Masuk',
+                            data: MONTH_COUNTS,
+                            borderColor: brandYellow,
+                            backgroundColor: brandLight,
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 3,
+                            pointBackgroundColor: brandLine,
+                        },
+                    ],
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { grid: { color: 'rgba(0,0,0,.05)' }, ticks: { precision: 0 } },
+                    },
+                },
+            });
+
+            let barChart = new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: JENIS_LABELS,
+                    datasets: [
+                        {
+                            label: 'Tergarap',
+                            backgroundColor: '#34d399',
+                            data: JENIS_SELESAI,
+                        },
+                        {
+                            label: 'Belum',
+                            backgroundColor: '#fbbf24',
+                            data: JENIS_BELUM,
+                        },
+                        {
+                            label: 'Surat Tamu',
+                            backgroundColor: '#fef3c7',
+                            data: JENIS_GUEST,
+                        },
+                    ],
+                },
+                options: {
+                    plugins: { legend: { position: 'bottom' } },
+                    scales: {
+                        x: { stacked: true },
+                        y: { stacked: true, grid: { color: 'rgba(0,0,0,.05)' }, ticks: { precision: 0 } },
+                    },
+                },
+            });
+
+            document.getElementById('refreshLine').addEventListener('click', () => {
+                const newData = lineChart.data.datasets[0].data.map((value) => {
+                    const randomFactor = 0.9 + Math.random() * 0.2;
+                    return Math.max(0, Math.round(value * randomFactor));
+                });
+                lineChart.data.datasets[0].data = newData;
+                lineChart.update();
+                toast('Data grafik diperbarui');
+            });
+        </script>
+    </body>
+</html>

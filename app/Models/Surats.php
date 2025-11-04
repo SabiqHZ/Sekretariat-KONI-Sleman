@@ -23,6 +23,7 @@ class Surats extends Model {
         'keterangan',
         'file_path',
         'is_from_guest',
+        'is_completed',
         'guest_name',
     ];
 

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class AdministrasiController extends Controller 
 {
@@ -57,11 +58,122 @@ class AdministrasiController extends Controller
 
     public function dashboard()
     {
+        Carbon::setLocale('id');
+
         $totalSurat = Surats::count();
-        $suratFromGuest = DB::table('surats')
-                      ->where('is_from_guest', 1)
-                      ->count();
-        return view('administrasi.dashboard', compact('totalSurat', 'suratFromGuest'));
+        $suratFromGuest = Surats::where('is_from_guest', true)->count();
+        $suratSelesai = Surats::where('is_completed', true)->count();
+        $suratBelum = $totalSurat - $suratSelesai;
+
+        $latestSurat = Surats::with('jenis')
+            ->orderByDesc('tanggal_masuk')
+            ->orderByDesc('created_at')
+            ->take(12)
+            ->get();
+
+        $startMonth = Carbon::now()->startOfMonth()->subMonths(11);
+        $monthlySummary = Surats::selectRaw('DATE_FORMAT(tanggal_masuk, "%Y-%m") as period, COUNT(*) as total')
+            ->whereNotNull('tanggal_masuk')
+            ->where('tanggal_masuk', '>=', $startMonth)
+            ->groupBy('period')
+            ->orderBy('period')
+            ->get()
+            ->keyBy('period');
+
+        $monthlyLabels = [];
+        $monthlyCounts = [];
+
+        for ($i = 0; $i < 12; $i++) {
+            $month = $startMonth->copy()->addMonths($i);
+            $key = $month->format('Y-m');
+            $monthlyLabels[] = $month->translatedFormat('M');
+            $monthlyCounts[] = $monthlySummary[$key]->total ?? 0;
+        }
+
+        $jenisBreakdown = Surats::select(
+            'jenis_surat_id',
+            DB::raw('COUNT(*) as total'),
+            DB::raw('SUM(CASE WHEN is_completed = 1 THEN 1 ELSE 0 END) as selesai'),
+            DB::raw('SUM(CASE WHEN is_completed = 0 THEN 1 ELSE 0 END) as belum'),
+            DB::raw('SUM(CASE WHEN is_from_guest = 1 THEN 1 ELSE 0 END) as guest')
+        )
+            ->whereNotNull('jenis_surat_id')
+            ->groupBy('jenis_surat_id')
+            ->orderByDesc('total')
+            ->take(5)
+            ->get();
+
+        $jenisNames = JenisSurat::whereIn('id', $jenisBreakdown->pluck('jenis_surat_id'))
+            ->get()
+            ->keyBy('id');
+
+        $jenisLabels = [];
+        $jenisSelesai = [];
+        $jenisBelum = [];
+        $jenisGuest = [];
+
+        foreach ($jenisBreakdown as $row) {
+            $jenisLabels[] = $jenisNames[$row->jenis_surat_id]->jenis_surat ?? 'Tidak diketahui';
+            $jenisSelesai[] = (int) $row->selesai;
+            $jenisBelum[] = (int) $row->belum;
+            $jenisGuest[] = (int) $row->guest;
+        }
+
+        $completionRate = $totalSurat > 0 ? round(($suratSelesai / $totalSurat) * 100, 1) : 0;
+        $guestRate = $totalSurat > 0 ? round(($suratFromGuest / $totalSurat) * 100, 1) : 0;
+
+        $tableData = $latestSurat->map(function (Surats $surat) {
+            return [
+                'id' => $surat->id,
+                'nomor_surat' => $surat->nomor_surat,
+                'jenis' => optional($surat->jenis)->jenis_surat ?? 'Tidak diketahui',
+                'pengirim' => $surat->pengirim,
+                'tanggal_surat' => optional($surat->tanggal_surat)->translatedFormat('d M Y'),
+                'tanggal_masuk' => optional($surat->tanggal_masuk)->translatedFormat('d M Y'),
+                'keterangan' => $surat->keterangan,
+                'is_from_guest' => (bool) $surat->is_from_guest,
+                'is_completed' => (bool) $surat->is_completed,
+            ];
+        });
+
+        $jenisOptions = JenisSurat::orderBy('jenis_surat')->get();
+
+        return view('administrasi.dashboard', [
+            'totalSurat' => $totalSurat,
+            'suratFromGuest' => $suratFromGuest,
+            'suratSelesai' => $suratSelesai,
+            'suratBelum' => $suratBelum,
+            'completionRate' => $completionRate,
+            'guestRate' => $guestRate,
+            'monthlyLabels' => $monthlyLabels,
+            'monthlyCounts' => $monthlyCounts,
+            'jenisLabels' => $jenisLabels,
+            'jenisSelesai' => $jenisSelesai,
+            'jenisBelum' => $jenisBelum,
+            'jenisGuest' => $jenisGuest,
+            'tableData' => $tableData,
+            'jenisOptions' => $jenisOptions,
+        ]);
+    }
+
+    public function toggleCompletion(Request $request, Surats $surat)
+    {
+        if (Auth::user()->role === 'supervisor') {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $surat->update([
+            'is_completed' => $request->boolean('is_completed'),
+        ]);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => 'Status surat diperbarui.',
+                'is_completed' => (bool) $surat->is_completed,
+            ]);
+        }
+
+        return back()->with('success', 'Status surat diperbarui.');
     }
 
     public function create() 

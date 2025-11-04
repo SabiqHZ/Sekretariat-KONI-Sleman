@@ -28,13 +28,17 @@ Route::get('/administrasi/dashboard', [AdministrasiController::class, 'dashboard
     ->name('administrasi.dashboard');
 
 // Route untuk halaman index surat
-Route::prefix('administrasi/dashboard')->name('administrasi.')->middleware(['auth', 'verified', AdministrasiMiddleware::class])->group(function() {
-    // Gunakan resource dengan semua method termasuk index
-    Route::resource('surat', AdministrasiController::class);
-    
-    // Tambahkan route untuk export PDF
-Route::get('surat/{surat}/pdf', [AdministrasiController::class, 'exportPdf'])->name('surat.pdf');
-});
+Route::prefix('administrasi/dashboard')
+    ->name('administrasi.')
+    ->middleware(['auth', 'verified', AdministrasiMiddleware::class])
+    ->group(function () {
+        // Gunakan resource dengan semua method termasuk index
+        Route::resource('surat', AdministrasiController::class);
+
+        // Tambahkan route untuk export PDF
+        Route::get('surat/{surat}/pdf', [AdministrasiController::class, 'exportPdf'])->name('surat.pdf');
+        Route::patch('surat/{surat}/toggle', [AdministrasiController::class, 'toggleCompletion'])->name('surat.toggle');
+    });
 
 Route::middleware(['auth', 'verified', AdministrasiMiddleware::class])
     ->prefix('administrasi/dashboard')
