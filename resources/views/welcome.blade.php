@@ -28,7 +28,7 @@
 
             <div>
                 @auth
-                <a href="{{ route(auth()->user()->role . '.dashboard') }}" class="btn">
+                <a href="{{ route(auth()->user()->role . '.dashboard') }}" class="btn btn-admin">
                     Dashboard
                 </a>
                 @else
@@ -50,15 +50,15 @@
                 atau undangan—langsung ke Sekretariat KONI Sleman, menjadikannya
                 sarana komunikasi yang praktis, transparan, dan responsif.
             </p>
-
+            @guest
             <a href="{{ route('guest.surat.create') }}" class="btn-primary">
                 <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                 </svg>
                 Kirim Surat
             </a>
+            @endguest
         </section>
-
         {{-- About Section --}}
         <section id="tentang">
             <h2>Tentang</h2>

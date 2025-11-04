@@ -1,317 +1,164 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
-@section('title', 'Profile Settings')
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Edit Profile - Sekretariat KONI Sleman</title>
+    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 
-@section('header')
-    <div class="flex items-center gap-4">
-        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
-            <i data-lucide="user" class="w-6 h-6 text-blue-600"></i>
+    {{-- Fonts --}}
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600&family=Lato:wght@400;700&family=Questrial&display=swap" rel="stylesheet">
+
+    {{-- CSS --}}
+    @vite(['resources/css/edit-profile-admin.css'])
+</head>
+
+<body>
+    {{-- Header --}}
+    <header class="main-header">
+        <div class="header-left">
+            <img src="{{ asset('images/koni1.png') }}" alt="KONI Sleman" class="header-logo">
         </div>
-        <div>
-            <h1 class="text-2xl font-semibold text-gray-900">Profile Settings</h1>
-            <p class="text-gray-600">Manage your account details and security</p>
-        </div>
-    </div>
-@endsection
+        <nav class="main-nav">
+            <a href="{{ url('/') }}" class="nav-btn">Beranda</a>
+            <a href="{{ route(auth()->user()->role . '.dashboard') }}" class="nav-btn nav-btn-back">Kembali ke Dashboard</a>
+        </nav>
+    </header>
 
-@section('content')
-    <div class="space-y-6 max-w-3xl mx-auto">
-        <!-- Profile Information Section -->
-        <div class="bg-white rounded-xl shadow-sm p-6">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="p-2 rounded-lg bg-blue-50 text-blue-600">
-                    <i data-lucide="user" class="w-5 h-5"></i>
+    {{-- Main Content --}}
+    <div class="main-content">
+        <div class="container">
+
+            {{-- Combined Profile & Password Section --}}
+            <div class="profile-card profile-card-compact">
+                <div class="card-header">
+                    <div class="card-icon card-icon-blue">
+                        <svg class="icon-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="card-title">Edit Profile</h2>
                 </div>
-                <h2 class="text-lg font-semibold">Personal Information</h2>
-            </div>
-            
-            <form method="post" action="{{ route('profile.update') }}" class="space-y-5">
-                @csrf
-                @method('patch')
 
-                <div class="space-y-1">
-                    <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
-                    <input 
-                        id="name" 
-                        name="name" 
-                        type="text" 
-                        class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" 
-                        value="{{ old('name', $user->name) }}" 
-                        
-                        autofocus
-                    >
-                    @error('name')
-                        <p class="mt-1 text-sm text-red-600 flex items-center gap-1">
-                            <i data-lucide="alert-circle" class="w-4 h-4"></i> {{ $message }}
+                <form method="POST" action="{{ route('profile.update') }}" class="profile-form">
+                    @csrf
+                    @method('PATCH')
+
+                    <div class="form-group">
+                        <label for="name" class="form-label">Nama Lengkap</label>
+                        <input
+                            id="name"
+                            name="name"
+                            type="text"
+                            class="form-input"
+                            value="{{ old('name', $user->name) }}"
+                            required
+                            autofocus>
+                        @error('name')
+                        <p class="error-message">
+                            <svg class="icon-xs" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            {{ $message }}
                         </p>
-                    @enderror
-                </div>
+                        @enderror
+                    </div>
 
-                <div class="pt-2">
-                    <button type="submit" class="btn-primary">
-                        <i data-lucide="save" class="w-4 h-4 mr-2"></i>
-                        Save Changes
-                    </button>
-                </div>
-            </form>
-        </div>
+                    <div class="form-divider"></div>
 
-        <!-- Password Update Section -->
-        <div class="bg-white rounded-xl shadow-sm p-6">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="p-2 rounded-lg bg-green-50 text-green-600">
-                    <i data-lucide="lock" class="w-5 h-5"></i>
-                </div>
-                <h2 class="text-lg font-semibold">Password & Security</h2>
-            </div>
-            
-            <form method="post" action="{{ route('profile.password') }}" class="space-y-5">
-                @csrf
-                @method('patch')
+                    <div class="form-group">
+                        <label for="current_password" class="form-label">Password Saat Ini (Kosongkan jika tidak ingin mengubah)</label>
+                        <div class="password-wrapper">
+                            <input
+                                id="current_password"
+                                name="current_password"
+                                type="password"
+                                class="form-input form-input-password"
+                                autocomplete="current-password">
+                            <button type="button" class="password-toggle" onclick="togglePassword('current_password')">
+                                <svg class="icon-sm eye-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        @error('current_password')
+                        <p class="error-message">
+                            <svg class="icon-xs" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            {{ $message }}
+                        </p>
+                        @enderror
+                    </div>
 
-                <div class="space-y-1">
-                    <label for="current_password" class="block text-sm font-medium text-gray-700">Current Password</label>
-                    <div class="relative">
-                        <input 
-                            id="current_password" 
-                            name="current_password" 
-                            type="password" 
-                            class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 pr-10" 
-                            
-                            autocomplete="current-password"
-                        >
-                        <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-white-400 hover:text-white-600" onclick="togglePassword('current_password')">
-                            <i data-lucide="eye" class="w-5 h-5"></i>
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password Baru</label>
+                        <div class="password-wrapper">
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                class="form-input form-input-password"
+                                autocomplete="new-password">
+                            <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                                <svg class="icon-sm eye-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <p class="input-hint">
+                            <svg class="icon-xs" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Minimal 8 karakter
+                        </p>
+                        @error('password')
+                        <p class="error-message">
+                            <svg class="icon-xs" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            {{ $message }}
+                        </p>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password_confirmation" class="form-label">Konfirmasi Password Baru</label>
+                        <div class="password-wrapper">
+                            <input
+                                id="password_confirmation"
+                                name="password_confirmation"
+                                type="password"
+                                class="form-input form-input-password"
+                                autocomplete="new-password">
+                            <button type="button" class="password-toggle" onclick="togglePassword('password_confirmation')">
+                                <svg class="icon-sm eye-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div id="password-match-feedback" class="password-feedback"></div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit">
+                            <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Update Profile
                         </button>
                     </div>
-                    @error('current_password')
-                        <p class="mt-1 text-sm text-red-600 flex items-center gap-1">
-                            <i data-lucide="alert-circle" class="w-4 h-4"></i> {{ $message }}
-                        </p>
-                    @enderror
-                </div>
-
-                <div class="space-y-1">
-                    <label for="password" class="block text-sm font-medium text-gray-700">New Password</label>
-                    <div class="relative">
-                        <input 
-                            id="password" 
-                            name="password" 
-                            type="password" 
-                            class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 pr-10" 
-                            
-                            autocomplete="new-password"
-                        >
-                        <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600" onclick="togglePassword('password')">
-                            <i data-lucide="eye" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-                    <div class="mt-2 text-xs text-gray-500">
-                        <p class="flex items-center gap-1"><i data-lucide="check" class="w-3 h-3 text-green-500"></i> Minimum 8 characters</p>
-                    </div>
-                    @error('password')
-                        <p class="mt-1 text-sm text-red-600 flex items-center gap-1">
-                            <i data-lucide="alert-circle" class="w-4 h-4"></i> {{ $message }}
-                        </p>
-                    @enderror
-                </div>
-
-                <div class="space-y-1">
-                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm New Password</label>
-                    <div class="relative">
-                        <input 
-                            id="password_confirmation" 
-                            name="password_confirmation" 
-                            type="password" 
-                            class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 pr-10" 
-                            
-                            autocomplete="new-password"
-                        >
-                        <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600" onclick="togglePassword('password_confirmation')">
-                            <i data-lucide="eye" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-                    <div id="password-match-feedback" class="mt-1 text-sm hidden">
-                        <p class="flex items-center gap-1 text-green-600"><i data-lucide="check-circle" class="w-4 h-4"></i> Passwords match</p>
-                    </div>
-                </div>
-
-                <div class="pt-2">
-                    <button type="submit" class="btn-primary">
-                        Update Password
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Security Tips Section -->
-        <div class="bg-blue-50 rounded-xl p-6 border border-blue-100">
-            <div class="flex items-start gap-4">
-                <div class="p-2 rounded-lg bg-blue-100 text-blue-600 flex-shrink-0">
-                    <i data-lucide="shield-check" class="w-5 h-5"></i>
-                </div>
-                <div>
-                    <h3 class="font-medium text-gray-900 mb-3">Security Recommendations</h3>
-                    <ul class="space-y-2 text-sm text-gray-700">
-                        <li class="flex items-start gap-2">
-                            <i data-lucide="check" class="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0"></i>
-                            <span>Use a unique password for this account</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i data-lucide="check" class="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0"></i>
-                            <span>Consider using a password manager</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i data-lucide="check" class="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0"></i>
-                            <span>Enable two-factor authentication if available</span>
-                        </li>
-                    </ul>
-                </div>
+                </form>
             </div>
         </div>
     </div>
-@endsection
 
-@push('scripts')
-<!-- SweetAlert -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!-- Lucide Icons -->
-<script src="https://unpkg.com/lucide@latest"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize icons
-        if (window.lucide) {
-            lucide.createIcons();
-        }
+    {{-- JavaScript --}}
+    @vite(['resources/js/edit-profile-admin.js'])
+</body>
 
-        // Toggle password visibility
-        window.togglePassword = function(id) {
-            const input = document.getElementById(id);
-            const icon = input.nextElementSibling.querySelector('i');
-            
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.setAttribute('data-lucide', 'eye-off');
-            } else {
-                input.type = 'password';
-                icon.setAttribute('data-lucide', 'eye');
-            }
-            
-            if (window.lucide) {
-                lucide.createIcons();
-            }
-        };
-
-        // Validasi password match
-        const passwordInput = document.getElementById('password');
-        const confirmInput = document.getElementById('password_confirmation');
-        const feedback = document.getElementById('password-match-feedback');
-
-        if (passwordInput && confirmInput) {
-            confirmInput.addEventListener('input', function() {
-                if (passwordInput.value && confirmInput.value) {
-                    feedback.classList.remove('hidden');
-                    
-                    if (passwordInput.value === confirmInput.value) {
-                        feedback.innerHTML = `
-                            <p class="flex items-center gap-1 text-green-600">
-                                <i data-lucide="check-circle" class="w-4 h-4"></i> Passwords match
-                            </p>
-                        `;
-                    } else {
-                        feedback.innerHTML = `
-                            <p class="flex items-center gap-1 text-red-600">
-                                <i data-lucide="x-circle" class="w-4 h-4"></i> Passwords don't match
-                            </p>
-                        `;
-                    }
-                    
-                    if (window.lucide) {
-                        lucide.createIcons();
-                    }
-                } else {
-                    feedback.classList.add('hidden');
-                }
-            });
-        }
-
-        // Form submission dengan validasi
-        document.querySelectorAll('form').forEach(form => {
-            form.addEventListener('submit', function(e) {
-                let isValid = true;
-                const requiredFields = form.querySelectorAll('[required]');
-
-                // Cek kolom kosong
-                requiredFields.forEach(field => {
-                    if (!field.value.trim()) {
-                        isValid = false;
-                        field.classList.add('border-red-500');
-                        showAlert('Error', 'Please fill in all required fields!', 'error');
-                    } else {
-                        field.classList.remove('border-red-500');
-                    }
-                });
-
-                // Cek konfirmasi password (jika ada)
-                if (passwordInput && confirmInput && passwordInput.value !== confirmInput.value) {
-                    isValid = false;
-                    showAlert('Error', 'Passwords do not match!', 'error');
-                }
-
-                if (!isValid) {
-                    e.preventDefault(); // Hentikan submit jika tidak valid
-                    return;
-                }
-
-                // Loading state jika form valid
-                const button = form.querySelector('button[type="submit"]');
-                if (button) {
-                    const originalHTML = button.innerHTML;
-                    button.innerHTML = `
-                        <i data-lucide="loader-2" class="w-4 h-4 mr-2 animate-spin"></i>
-                        ${button.textContent.trim()}
-                    `;
-                    button.disabled = true;
-                    
-                    if (window.lucide) {
-                        lucide.createIcons();
-                    }
-
-                    // Reset setelah 5 detik jika ada error
-                    setTimeout(() => {
-                        button.innerHTML = originalHTML;
-                        button.disabled = false;
-                        if (window.lucide) {
-                            lucide.createIcons();
-                        }
-                    }, 5000);
-                }
-            });
-        });
-
-        // Fungsi SweetAlert untuk notifikasi
-        window.showAlert = function(title, message, type) {
-            Swal.fire({
-                title: title,
-                text: message,
-                icon: type,
-                confirmButtonColor: '#3b82f6',
-                confirmButtonText: 'OK'
-            });
-        };
-
-        // Notifikasi sukses dari session
-        @if(session('status') === 'profile-updated')
-            showAlert('Success', 'Profile updated successfully!', 'success');
-        @endif
-        
-        @if(session('status') === 'password-updated')
-            showAlert('Success', 'Password updated successfully!', 'success');
-        @endif
-
-        @if($errors->any())
-            showAlert('Error', '{{ $errors->first() }}', 'error');
-        @endif
-    });
-</script>
-@endpush
+</html>

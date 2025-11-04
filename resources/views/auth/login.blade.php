@@ -50,12 +50,12 @@
             <form method="POST" action="{{ route('login') }}">
                 @csrf
 
-                {{-- Username --}}
+                {{-- name Address --}}
                 <div class="form-group">
-                    <label for="name">{{ __('Nama Pengguna') }}</label>
+                    <label for="name">{{ __('Posisi Pengguna') }}</label>
                     <input
                         id="name"
-                        type="text"
+                        type="name"
                         name="name"
                         value="{{ old('name') }}"
                         required

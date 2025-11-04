@@ -1,0 +1,459 @@
+/* ===================================
+   CSS VARIABLES
+   =================================== */
+:root {
+    --primary-color: #eb5120;
+    --primary-hover: #d64618;
+    --secondary-color: #f2d52c;
+    --text-dark: #1e3a8a;
+    --text-gray: #374151;
+    --bg-blue: #3b82f6;
+    --bg-orange: #eb5120;
+    --font-heading: "Poppins", sans-serif;
+    --font-body: "Inter", sans-serif;
+}
+
+/* ===================================
+   RESET & BASE STYLES
+   =================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    background: rgb(255, 255, 255);
+    color: var(--text-dark);
+    min-height: 100vh;
+}
+
+/* ===================================
+   HEADER STYLES
+   =================================== */
+.main-header {
+    background-color: var(--secondary-color);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.header-logo {
+    height: 48px;
+    width: auto;
+}
+
+.header-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #000;
+}
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* ===================================
+   NAVIGATION BUTTONS
+   =================================== */
+.nav-btn {
+    font-family: var(--font-body);
+    background: none;
+    border: none;
+    padding: 0.7rem 1.2rem;
+    color: #000;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+.nav-btn:hover {
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.nav-btn-back {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 12px rgba(235, 81, 32, 0.3);
+}
+
+.nav-btn-back:hover {
+    background: var(--primary-hover);
+    color: white;
+    transform: translateY(-2px) scale(1.02);
+}
+
+/* ===================================
+   MAIN CONTENT
+   =================================== */
+.main-content {
+    padding-top: 100px;
+    padding-bottom: 3rem;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* ===================================
+   PROFILE CARDS
+   =================================== */
+.profile-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.profile-card-compact {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.form-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, #e5e7eb, transparent);
+    margin: 1.5rem 0;
+}
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+.card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-icon-blue {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--bg-blue);
+}
+
+.card-icon-orange {
+    background: rgba(235, 81, 32, 0.1);
+    color: var(--bg-orange);
+}
+
+.card-title {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+/* ===================================
+   FORM STYLES
+   =================================== */
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-gray);
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.875rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    font-family: var(--font-body);
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(235, 81, 32, 0.1);
+}
+
+/* ===================================
+   PASSWORD INPUT
+   =================================== */
+.password-wrapper {
+    position: relative;
+}
+
+.form-input-password {
+    padding-right: 3rem;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+    color: var(--text-gray);
+}
+
+/* ===================================
+   INPUT HINTS & ERRORS
+   =================================== */
+.input-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+.error-message {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: #dc2626;
+    margin-top: 0.25rem;
+}
+
+.password-feedback {
+    display: none;
+    margin-top: 0.5rem;
+}
+
+.password-feedback.show {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.password-feedback.match {
+    color: #16a34a;
+}
+
+.password-feedback.no-match {
+    color: #dc2626;
+}
+
+/* ===================================
+   FORM ACTIONS
+   =================================== */
+.form-actions {
+    padding-top: 1rem;
+    margin-top: 0.5rem;
+    border-top: 1px solid #f3f4f6;
+}
+
+.btn-submit {
+    font-family: var(--font-body);
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.875rem 2rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    /* make the button a flex container and center it horizontally inside its parent */
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    /* center the button by auto margins */
+    margin: 0 auto;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(235, 81, 32, 0.3);
+    position: relative;
+}
+
+.btn-submit:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(235, 81, 32, 0.4);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+}
+
+.btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+/* ===================================
+   ICON SIZES
+   =================================== */
+.icon-xs {
+    width: 1rem;
+    height: 1rem;
+}
+
+.icon-sm {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.icon-md {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+/* ===================================
+   ANIMATIONS
+   =================================== */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+@media (max-width: 768px) {
+    .main-header {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .header-left {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .header-title {
+        font-size: 1.25rem;
+    }
+
+    .main-nav {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .nav-btn {
+        font-size: 0.85rem;
+        padding: 0.6rem 1rem;
+    }
+
+    .main-content {
+        padding-top: 140px;
+    }
+
+    .container {
+        padding: 0 1rem;
+    }
+
+    .profile-card {
+        padding: 1.5rem;
+    }
+
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .security-tips {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-logo {
+        height: 40px;
+    }
+
+    .header-title {
+        font-size: 1.1rem;
+    }
+
+    .profile-card {
+        padding: 1.25rem;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+    }
+
+    .form-input {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .btn-submit {
+        width: 100%;
+        justify-content: center;
+    }
+}

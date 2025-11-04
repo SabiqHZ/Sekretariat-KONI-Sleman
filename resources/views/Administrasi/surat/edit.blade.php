@@ -5,8 +5,8 @@
     <div class="max-w-4xl mx-auto px-4">
         <!-- Tombol Batal di Kiri Atas -->
         <div class="flex justify-start mb-6">
-            <a href="{{ route('administrasi.surat.index') }}" 
-               class="inline-flex items-center px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition-all duration-200 shadow-md hover:shadow-lg">
+            <a href="{{ route('administrasi.surat.index') }}"
+                class="inline-flex items-center px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition-all duration-200 shadow-md hover:shadow-lg">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
@@ -30,10 +30,10 @@
         <!-- Main Form Card -->
         <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
             <div class="bg-gradient-to-r from-yellow-500 to-orange-600 h-2"></div>
-            
+
             <form action="{{ route('administrasi.surat.update',$surat) }}" method="POST" enctype="multipart/form-data" class="p-8">
                 @csrf @method('PUT')
-                
+
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Jenis Surat -->
                     <div class="lg:col-span-2">
@@ -48,9 +48,9 @@
                         <select name="jenis_surat_id" class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white">
                             <option value="">Pilih Jenis Surat</option>
                             @foreach($types as $type)
-                                <option value="{{ $type->id }}" {{ $surat->jenis_surat_id == $type->id ? 'selected' : '' }}>
-                                    {{ $type->nama_jenis_surat }}
-                                </option>
+                            <option value="{{ $type->id }}" {{ $surat->jenis_surat_id == $type->id ? 'selected' : '' }}>
+                                {{ $type->nama_jenis_surat }}
+                            </option>
                             @endforeach
                         </select>
                     </div>
@@ -66,9 +66,9 @@
                             </span>
                         </label>
                         <input type="text" name="nomor_surat" value="{{ $surat->nomor_surat }}"
-                               class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" 
-                               placeholder="Contoh: 001/ADM/2024"
-                               required>
+                            class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                            placeholder="Contoh: 001/ADM/2024"
+                            required>
                     </div>
 
                     <!-- Tanggal Surat -->
@@ -83,8 +83,8 @@
                         </label>
                         <div class="relative">
                             <input type="date" name="tanggal_surat" value="{{ $surat->tanggal_surat ? $surat->tanggal_surat->format('Y-m-d') : '' }}"
-                                   class="w-full border-2 border-gray-200 rounded-xl p-3 pr-12 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 cursor-pointer bg-white" 
-                                   required>
+                                class="w-full border-2 border-gray-200 rounded-xl p-3 pr-12 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 cursor-pointer bg-white"
+                                required>
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -105,8 +105,8 @@
                         </label>
                         <div class="relative">
                             <input type="date" name="tanggal_masuk" value="{{ $surat->tanggal_masuk ? $surat->tanggal_masuk->format('Y-m-d') : '' }}"
-                                   class="w-full border-2 border-gray-200 rounded-xl p-3 pr-12 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 cursor-pointer bg-white" 
-                                   required>
+                                class="w-full border-2 border-gray-200 rounded-xl p-3 pr-12 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 cursor-pointer bg-white"
+                                required>
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -126,9 +126,9 @@
                             </span>
                         </label>
                         <input type="text" name="pengirim" value="{{ $surat->pengirim }}"
-                               class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" 
-                               placeholder="Nama instansi atau perorangan"
-                               required>
+                            class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                            placeholder="Nama instansi atau perorangan"
+                            required>
                     </div>
 
                     <!-- Keterangan -->
@@ -141,9 +141,9 @@
                                 Keterangan
                             </span>
                         </label>
-                        <textarea name="keterangan" rows="4" 
-                                  class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none" 
-                                  placeholder="Deskripsi singkat tentang isi surat...">{{ $surat->keterangan }}</textarea>
+                        <textarea name="keterangan" rows="4"
+                            class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none"
+                            placeholder="Deskripsi singkat tentang isi surat...">{{ $surat->keterangan }}</textarea>
                     </div>
 
                     <!-- Upload File -->
@@ -159,23 +159,23 @@
 
                         <!-- Current File Info -->
                         @if($surat->file_path)
-                            <div class="mb-4 p-4 bg-green-50 border border-green-200 rounded-xl">
-                                <div class="flex items-center">
-                                    <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                    </svg>
-                                    <span class="text-sm text-green-700 font-medium">File saat ini: </span>
-                                    <a href="{{ Storage::url($surat->file_path) }}" target="_blank" 
-                                       class="text-sm text-green-600 hover:text-green-800 underline ml-1">
-                                        Lihat PDF
-                                    </a>
-                                </div>
+                        <div class="mb-4 p-4 bg-green-50 border border-green-200 rounded-xl">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                <span class="text-sm text-green-700 font-medium">File saat ini: </span>
+                                <a href="{{ Storage::url($surat->file_path) }}" target="_blank"
+                                    class="text-sm text-green-600 hover:text-green-800 underline ml-1">
+                                    Lihat PDF
+                                </a>
                             </div>
+                        </div>
                         @endif
 
                         <div class="relative">
                             <input type="file" name="file" accept="application/pdf" id="file-upload"
-                                   class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                             <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-blue-400 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-200 transition-all duration-200 bg-gray-50 hover:bg-blue-50">
                                 <div class="flex flex-col items-center">
                                     <svg class="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,8 +203,8 @@
 
                 <!-- Action Buttons -->
                 <div class="flex justify-center mt-8 pt-6 border-t border-gray-200">
-                    <button type="submit" 
-                            class="bg-gradient-to-r from-yellow-500 to-orange-600 text-white font-semibold py-3 px-8 rounded-xl hover:from-yellow-600 hover:to-orange-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl">
+                    <button type="submit"
+                        class="bg-gradient-to-r from-yellow-500 to-orange-600 text-white font-semibold py-3 px-8 rounded-xl hover:from-yellow-600 hover:to-orange-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl">
                         <span class="flex items-center justify-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -247,62 +247,62 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const fileInput = document.getElementById('file-upload');
-    const fileName = document.getElementById('file-name');
-    const selectedFileName = document.getElementById('selected-file-name');
-    
-    fileInput.addEventListener('change', function(e) {
-        if (e.target.files.length > 0) {
-            const file = e.target.files[0];
-            selectedFileName.textContent = file.name;
-            fileName.classList.remove('hidden');
-        } else {
-            fileName.classList.add('hidden');
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('file-upload');
+        const fileName = document.getElementById('file-name');
+        const selectedFileName = document.getElementById('selected-file-name');
+
+        fileInput.addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                selectedFileName.textContent = file.name;
+                fileName.classList.remove('hidden');
+            } else {
+                fileName.classList.add('hidden');
+            }
+        });
+
+        // Drag and drop functionality
+        const dropZone = fileInput.parentElement;
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            dropZone.classList.add('border-blue-500', 'bg-blue-100');
+        }
+
+        function unhighlight(e) {
+            dropZone.classList.remove('border-blue-500', 'bg-blue-100');
+        }
+
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            if (files.length > 0) {
+                fileInput.files = files;
+                const file = files[0];
+                selectedFileName.textContent = file.name;
+                fileName.classList.remove('hidden');
+            }
         }
     });
-    
-    // Drag and drop functionality
-    const dropZone = fileInput.parentElement;
-    
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, preventDefaults, false);
-    });
-    
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-    
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropZone.addEventListener(eventName, highlight, false);
-    });
-    
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, unhighlight, false);
-    });
-    
-    function highlight(e) {
-        dropZone.classList.add('border-blue-500', 'bg-blue-100');
-    }
-    
-    function unhighlight(e) {
-        dropZone.classList.remove('border-blue-500', 'bg-blue-100');
-    }
-    
-    dropZone.addEventListener('drop', handleDrop, false);
-    
-    function handleDrop(e) {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        
-        if (files.length > 0) {
-            fileInput.files = files;
-            const file = files[0];
-            selectedFileName.textContent = file.name;
-            fileName.classList.remove('hidden');
-        }
-    }
-});
 </script>
 @endsection
