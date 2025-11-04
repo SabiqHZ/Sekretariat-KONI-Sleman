@@ -3,6 +3,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Surats;
 use App\Models\JenisSurat;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -57,11 +59,88 @@ class AdministrasiController extends Controller
 
     public function dashboard()
     {
+        $now = Carbon::now();
+        $rangeStart = $now->copy()->subMonths(5)->startOfMonth();
+
         $totalSurat = Surats::count();
-        $suratFromGuest = DB::table('surats')
-                      ->where('is_from_guest', 1)
-                      ->count();
-        return view('administrasi.dashboard', compact('totalSurat', 'suratFromGuest'));
+        $suratFromGuest = Surats::where('is_from_guest', true)->count();
+        $suratInternal = max($totalSurat - $suratFromGuest, 0);
+        $jenisCount = JenisSurat::count();
+        $suratWithAttachment = Surats::whereNotNull('file_path')->count();
+        $suratThisWeek = Surats::whereBetween(
+            DB::raw('DATE(COALESCE(tanggal_masuk, tanggal_surat, created_at))'),
+            [$now->copy()->startOfWeek(), $now->copy()->endOfWeek()]
+        )->count();
+
+        $monthlyCountsRaw = Surats::selectRaw(
+            "DATE_FORMAT(COALESCE(tanggal_masuk, tanggal_surat, created_at), '%Y-%m') as periode"
+        )
+            ->selectRaw('COUNT(*) as total')
+            ->whereBetween(
+                DB::raw('COALESCE(tanggal_masuk, tanggal_surat, created_at)'),
+                [$rangeStart, $now->copy()->endOfMonth()]
+            )
+            ->groupBy('periode')
+            ->pluck('total', 'periode');
+
+        $monthlyCounts = collect(CarbonPeriod::create($rangeStart, '1 month', $now))->map(
+            function (Carbon $date) use ($monthlyCountsRaw) {
+                $key = $date->format('Y-m');
+                return [
+                    'label' => $date->locale('id')->isoFormat('MMM Y'),
+                    'total' => (int) ($monthlyCountsRaw[$key] ?? 0),
+                ];
+            }
+        )->values();
+
+        $suratByJenis = Surats::select('jenis_surat_id')
+            ->selectRaw('COUNT(*) as total')
+            ->with('jenis:id,nama_jenis_surat')
+            ->groupBy('jenis_surat_id')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'jenis' => optional($item->jenis)->nama_jenis_surat ?? 'Tidak Terdata',
+                    'total' => (int) $item->total,
+                ];
+            })
+            ->sortByDesc('total')
+            ->values();
+
+        $suratOriginsByJenis = Surats::select('jenis_surat_id')
+            ->selectRaw("SUM(CASE WHEN is_from_guest = 1 THEN 1 ELSE 0 END) as guest_total")
+            ->selectRaw("SUM(CASE WHEN is_from_guest = 0 OR is_from_guest IS NULL THEN 1 ELSE 0 END) as internal_total")
+            ->with('jenis:id,nama_jenis_surat')
+            ->groupBy('jenis_surat_id')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'jenis' => optional($item->jenis)->nama_jenis_surat ?? 'Tidak Terdata',
+                    'guest' => (int) $item->guest_total,
+                    'internal' => (int) $item->internal_total,
+                ];
+            })
+            ->sortByDesc(fn ($row) => $row['guest'] + $row['internal'])
+            ->values()
+            ->take(4);
+
+        $recentSurat = Surats::with('jenis:id,nama_jenis_surat')
+            ->orderByDesc(DB::raw('COALESCE(tanggal_masuk, tanggal_surat, created_at)'))
+            ->take(8)
+            ->get();
+
+        return view('administrasi.dashboard', [
+            'totalSurat' => $totalSurat,
+            'suratFromGuest' => $suratFromGuest,
+            'suratInternal' => $suratInternal,
+            'jenisCount' => $jenisCount,
+            'suratWithAttachment' => $suratWithAttachment,
+            'suratThisWeek' => $suratThisWeek,
+            'monthlyCounts' => $monthlyCounts,
+            'suratByJenis' => $suratByJenis,
+            'suratOriginsByJenis' => $suratOriginsByJenis,
+            'recentSurat' => $recentSurat,
+        ]);
     }
 
     public function create() 
