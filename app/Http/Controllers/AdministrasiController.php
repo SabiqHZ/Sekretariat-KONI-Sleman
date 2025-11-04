@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Surats;
 use App\Models\JenisSurat;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -51,8 +52,15 @@ class AdministrasiController extends Controller
         
         $surat = $query->paginate(15)->withQueryString();
         $isSupervisor = Auth::user()->role === 'supervisor';
-        
-        return view('administrasi.surat.index', compact('surat', 'isSupervisor'));
+
+        $archivedSurat = Surats::with('jenis')
+            ->whereNotNull('keterangan')
+            ->whereRaw('LOWER(keterangan) LIKE ?', ['%arsip%'])
+            ->orderByDesc('updated_at')
+            ->take(6)
+            ->get();
+
+        return view('administrasi.surat.index', compact('surat', 'isSupervisor', 'archivedSurat'));
     }
 
     public function dashboard()
@@ -61,7 +69,55 @@ class AdministrasiController extends Controller
         $suratFromGuest = DB::table('surats')
                       ->where('is_from_guest', 1)
                       ->count();
-        return view('administrasi.dashboard', compact('totalSurat', 'suratFromGuest'));
+
+        $suratMasukBulanIni = Surats::whereMonth('tanggal_masuk', Carbon::now()->month)
+            ->whereYear('tanggal_masuk', Carbon::now()->year)
+            ->count();
+
+        $suratKeluarBulanIni = Surats::whereMonth('tanggal_surat', Carbon::now()->month)
+            ->whereYear('tanggal_surat', Carbon::now()->year)
+            ->count();
+
+        $arsipCount = Surats::whereNotNull('keterangan')
+            ->whereRaw('LOWER(keterangan) LIKE ?', ['%arsip%'])
+            ->count();
+
+        $recentSurat = Surats::with('jenis')
+            ->orderByDesc('created_at')
+            ->take(6)
+            ->get();
+
+        $archivedHighlight = Surats::with('jenis')
+            ->whereNotNull('keterangan')
+            ->whereRaw('LOWER(keterangan) LIKE ?', ['%arsip%'])
+            ->orderByDesc('updated_at')
+            ->take(6)
+            ->get();
+
+        $recentActivities = Surats::orderByDesc('updated_at')
+            ->take(6)
+            ->get()
+            ->map(function ($surat) {
+                return [
+                    'title' => $surat->nomor_surat,
+                    'jenis' => optional($surat->jenis)->nama_jenis_surat,
+                    'pengirim' => $surat->Pengirim,
+                    'masuk' => optional($surat->tanggal_masuk) ? $surat->tanggal_masuk->format('d M Y') : null,
+                    'keluar' => optional($surat->tanggal_surat) ? $surat->tanggal_surat->format('d M Y') : null,
+                    'timestamp' => optional($surat->updated_at)->format('d M Y - H:i'),
+                ];
+            });
+
+        return view('administrasi.dashboard', compact(
+            'totalSurat',
+            'suratFromGuest',
+            'suratMasukBulanIni',
+            'suratKeluarBulanIni',
+            'arsipCount',
+            'recentSurat',
+            'recentActivities',
+            'archivedHighlight'
+        ));
     }
 
     public function create() 

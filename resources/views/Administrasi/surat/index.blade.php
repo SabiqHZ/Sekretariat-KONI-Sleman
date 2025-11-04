@@ -1,308 +1,259 @@
 @extends('layouts.app')
 @section('title','Daftar Surat')
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8">
-    <div class="max-w-7xl mx-auto px-4">
-        <!-- Header Section - Centered -->
-    <div class="w-full px-4">
-        <div class="max-w-4xl mx-auto text-center mb-8">
-            <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3">
-                Daftar Surat
-            </h1>
-            <p class="text-gray-600 text-lg">Kelola dan monitor semua surat administrasi dengan mudah</p>
-        </div>
-
-        <!-- Success Alert -->
-        @push('scripts')
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    @if(session('success'))
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: '{{ session('success') }}',
-                            confirmButtonText: 'OK'
-                        });
-                    @endif
-                });
-            </script>
-        @endpush
-
-      <!-- Filter Section - Revisi untuk alignment yang sempurna -->
-<div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 mb-8">
-    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
-        <!-- Header Filter -->
-        <div class="flex items-center">
-            <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z"></path>
-            </svg>
-            <h3 class="text-lg font-semibold text-gray-800">Filter & Pencarian</h3>
-        </div>
-        
-        <!-- Action Buttons -->
-        @if(auth()->user()->role === 'administrasi')
-        <div class="flex flex-col sm:flex-row gap-3">
-            <button type="button" onclick="location.href='{{ route('administrasi.surat.create') }}'"
-                class="flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all text-sm">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                </svg>
-                Upload Surat
-            </button>
-            
-            <button type="button" onclick="location.href='{{ route('administrasi.jenis-surat.create') }}'"
-                class="flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-emerald-700 transition-all text-sm">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                </svg>
-                Tambah Jenis
-            </button>
-        </div>
-        @endif
-    </div>
-    <!-- Form Filter - Revisi untuk alignment sempurna -->
-    <form method="GET" action="{{ route('administrasi.surat.index') }}" class="space-y-4 md:space-y-0">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-            <!-- Search -->
+<div class="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-sky-50 py-12">
+    <div class="max-w-7xl mx-auto px-6 space-y-10">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Pencarian</label>
-                <div class="relative">
-                    <input type="text" name="search" value="{{ request('search') }}"
-                        placeholder="Cari pengirim/nomor surat..."
-                        class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 text-sm">
-                </div>
+                <p class="text-sm font-semibold uppercase tracking-[0.35em] text-orange-500">Administrasi Surat</p>
+                <h1 class="text-4xl font-bold text-slate-800 mt-2">Kelola Surat Masuk & Arsip</h1>
+                <p class="text-slate-500 mt-3 max-w-2xl">Pantau seluruh surat masuk dan keluar secara interaktif, lengkap dengan status realtime dan akses cepat menuju arsip digital.</p>
             </div>
-
-            <!-- Sort -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Sortir</label>
-                <select name="sort"
-                    class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 text-sm">
-                    <option value="">Pilih Sorting</option>
-                    <option value="tanggal_surat" {{ request('sort') == 'tanggal_surat' ? 'selected' : '' }}>Tanggal Surat</option>
-                    <option value="tanggal_masuk" {{ request('sort') == 'tanggal_masuk' ? 'selected' : '' }}>Tanggal Masuk</option>
-                    <option value="jenis_surat_id" {{ request('sort') == 'jenis_surat_id' ? 'selected' : '' }}>Jenis Surat</option>
-                    <option value="pengirim" {{ request('sort') == 'pengirim' ? 'selected' : '' }}>Pengirim</option>
-                    <option value="nomor_surat" {{ request('sort') == 'nomor_surat' ? 'selected' : '' }}>Nomor Surat</option>
-                </select>
-            </div>
-
-            <!-- Order -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Urutan</label>
-                <select name="order"
-                    class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 text-sm">
-                    <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Naik (A-Z)</option>
-                    <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Turun (Z-A)</option>
-                </select>
-            </div>
-
-            <!-- Submit Button -->
-            <div>
-                <button type="submit" 
-                    class="w-30 md:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm flex items-center justify-center">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                    Terapkan
-                </button>
+            <div class="flex flex-wrap gap-3 justify-start lg:justify-end">
+                <a href="{{ route('profile.edit') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white shadow-md text-slate-600 hover:text-orange-500 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5" /><path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.121 2.121 0 013 3L13 14l-4 1 1-4 8.5-8.5z" /></svg>
+                    Profil
+                </a>
+                @if(auth()->user()->role === 'administrasi')
+                <a href="{{ route('administrasi.jenis-surat.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white shadow-md text-slate-600 hover:text-orange-500 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" /></svg>
+                    Jenis Surat
+                </a>
+                <a href="{{ route('administrasi.surat.create') }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-400 text-white shadow-lg shadow-orange-200/70 transition transform hover:-translate-y-0.5">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                    Tambah Surat
+                </a>
+                @endif
             </div>
         </div>
-    </form>
-</div>
-    <!-- Tabel -->
-    <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden">
-        <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-1"></div>
 
-        <div class="hidden lg:block overflow-x-auto">
-            <table class="w-full">
-                <thead class="bg-gray-50/80">
-                    <tr>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 border-b border-gray-200">
-                            Nomor Surat
-                        </th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 border-b border-gray-200">
-                            Jenis Surat
-                        </th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 border-b border-gray-200">
-                            Pengirim
-                        </th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 border-b border-gray-200">
-                            Tanggal Surat
-                        </th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 border-b border-gray-200">
-                            Tanggal Masuk
-                        </th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 border-b border-gray-200">
-                            Keterangan
-                        </th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700 border-b border-gray-200">
-                            Aksi
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tbody class="divide-y divide-gray-200">
-                        @foreach($surat as $s)
-                            <tr class="@if(isset($s->is_from_guest) && $s->is_from_guest) guest-row @endif transition-colors duration-200 hover:bg-blue-50/50">
-                             <!-- Kolom-kolom tabel -->
-                                <!-- Nomor Surat -->
-                                <td class="px-6 py-4 text-sm font-medium {{ isset($s->is_from_guest) && $s->is_from_guest ? 'text-orange-900' : 'text-gray-900' }}">
-                                    {{ $s->nomor_surat }}
-                                </td>
-                                
-                                <!-- Jenis Surat -->
-                                <td class="px-6 py-4 text-sm text-gray-700">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ isset($s->is_from_guest) && $s->is_from_guest ? 'bg-orange-100 text-orange-800 border border-orange-200' : 'bg-blue-100 text-blue-800' }}">
-                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        {{ $s->jenis->nama_jenis_surat }}
-                                        @if(isset($s->is_from_guest) && $s->is_from_guest)
-                                            <span class="ml-1 px-1.5 py-0.5 bg-orange-200 text-orange-900 rounded text-xs font-bold">GUEST</span>
-                                        @endif
-                                    </span>
-                                </td>
-                                
-                                <!-- Pengirim -->
-                                <td class="px-6 py-4 text-sm {{ isset($s->is_from_guest) && $s->is_from_guest ? 'text-orange-800 font-medium' : 'text-gray-700' }}">
-                                    {{ $s->Pengirim }}
-                                </td>
-                                
-                                <!-- Tanggal Surat -->
-                                <td class="px-6 py-4 text-sm text-gray-700">
-                                    @if($s->tanggal_surat)
-                                        {{ $s->tanggal_surat->format('d-M-Y') }}
-                                    @else
-                                        <span class="text-gray-400 italic">-</span>
-                                    @endif
-                                </td>
-                                
-                                <!-- Tanggal Masuk -->
-                                <td class="px-6 py-4 text-sm text-gray-700">
-                                    @if($s->tanggal_masuk)
-                                    {{ $s->tanggal_masuk->format('d-M-Y') }}
-                                    @else
-                                        <span class="text-gray-400 italic">-</span>
-                                    @endif
-                                </td>
-                                
-                                <!-- Keterangan -->
-                                <td class="px-6 py-4 text-sm text-gray-700 max-w-xs">
-                                    @if($s->Keterangan)
-                                        @php
-                                            $words = str_split($s->Keterangan, 25);
-                                        @endphp
-                                        @foreach($words as $word)
-                                            <div>{{ $word }}</div>
-                                        @endforeach
-                                    @else
-                                        <span class="text-gray-400 italic">-</span>
-                                    @endif
-                                </td>
-                                <!-- Aksi -->
-                                <td class="px-6 py-4 text-sm text-center">
-                                    <div class="flex items-center justify-center space-x-3">
-                                        @if($s->file_path)
-                                            <a href="{{ Storage::url($s->file_path) }}" target="_blank"
-                                                class="inline-flex items-center px-3 py-1.5 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors duration-200">
-                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                                </svg>
-                                                PDF
-                                            </a>
-                                        @else
-                                            <span class="inline-flex items-center px-3 py-1 bg-gray-10 text-gray-500 rounded-lg hover:bg-gray-150 transition-colors duration-200">
-                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                                </svg>
-                                                Empty
-                                            </span>
-                                        @endif
-                                        @if(auth()->user()->role === 'administrasi')
-                                        <!-- Edit -->
-                                        <a href="{{ route('administrasi.surat.edit',$s) }}"
-                                            class="inline-flex items-center px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors duration-200">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                            </svg>
-                                            Edit
-                                        </a>
-                                        
-                                        <!-- PDF -->
-                                        <!-- Hapus -->
-                                        <form action="{{ route('administrasi.surat.destroy',$s) }}" method="POST" class="inline delete-form">
-                                            @csrf @method('DELETE')
-                                            <button type="button" class="delete-btn inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors duration-200"
-                                                    data-surat-jenissurat="{{ $s->jenis->nama_jenis_surat }}"
-                                                    data-surat-pengirim="{{ $s->Pengirim }}">
-                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                </svg>
-                                                Hapus
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
+        <div class="grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-8">
+            <section class="bg-white/90 backdrop-blur rounded-3xl shadow-xl shadow-slate-200/60 border border-white/50">
+                <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-8 pt-8 pb-4">
+                    <div>
+                        <h2 class="text-2xl font-semibold text-slate-800">Daftar Surat</h2>
+                        <p class="text-sm text-slate-500">Gunakan pencarian, filter dan status untuk mempercepat proses kerja.</p>
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-3 md:items-center">
+                        <form method="GET" action="{{ route('administrasi.surat.index') }}" class="flex flex-wrap gap-3 md:justify-end">
+                            <input type="hidden" name="order" value="{{ request('order') }}">
+                            <input type="hidden" name="sort" value="{{ request('sort') }}">
+                            <div class="relative">
+                                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nomor / pengirim" class="w-64 pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-orange-500 focus:ring focus:ring-orange-100 text-sm text-slate-700">
+                                <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                            </div>
+                            <div class="flex gap-2">
+                                <select name="sort" class="px-3 py-2 rounded-xl border border-slate-200 text-sm text-slate-600 focus:border-orange-500 focus:ring-2 focus:ring-orange-100">
+                                    <option value="">Urutkan</option>
+                                    <option value="tanggal_surat" @selected(request('sort')==='tanggal_surat')>Tanggal Surat</option>
+                                    <option value="tanggal_masuk" @selected(request('sort')==='tanggal_masuk')>Tanggal Masuk</option>
+                                    <option value="jenis_surat_id" @selected(request('sort')==='jenis_surat_id')>Jenis Surat</option>
+                                    <option value="nomor_surat" @selected(request('sort')==='nomor_surat')>Nomor Surat</option>
+                                </select>
+                                <select name="order" class="px-3 py-2 rounded-xl border border-slate-200 text-sm text-slate-600 focus:border-orange-500 focus:ring-2 focus:ring-orange-100">
+                                    <option value="desc" @selected(request('order')==='desc')>Terbaru</option>
+                                    <option value="asc" @selected(request('order')==='asc')>Terlama</option>
+                                </select>
+                                <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 text-white text-sm font-medium shadow hover:bg-orange-600 transition">
+                                    Terapkan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </header>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full min-w-[760px]">
+                        <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                            <tr>
+                                <th class="py-4 pl-8 pr-3 text-left font-semibold">Nomor Surat</th>
+                                <th class="px-3 py-4 text-left font-semibold">Jenis</th>
+                                <th class="px-3 py-4 text-left font-semibold">Pengirim</th>
+                                <th class="px-3 py-4 text-left font-semibold">Tanggal Surat</th>
+                                <th class="px-3 py-4 text-left font-semibold">Tanggal Masuk</th>
+                                <th class="px-3 py-4 text-left font-semibold">Keterangan</th>
+                                <th class="px-3 py-4 text-left font-semibold">Aksi</th>
+                                <th class="px-6 py-4 text-right font-semibold">Status</th>
                             </tr>
-                            @endif
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-       <div class="flex justify-between mb-4">
-    <button onclick="window.location.href='{{ route('surat.export') }}'"
-            class="flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all text-sm">
-        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-        </svg>
-        Export Excel
-    </button>
-</div>
-        <!-- Pagination -->
-        @if($surat->hasPages())
-            <div class="mt-8">
-                <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-4">
-                    {{ $surat->appends(request()->query())->links('pagination::tailwind') }}
+                        </thead>
+                        <tbody id="suratTableBody" class="divide-y divide-slate-100">
+                            @forelse($surat as $s)
+                                <tr class="hover:bg-orange-50/40 transition" data-row-id="{{ $s->id }}">
+                                    <td class="py-5 pl-8 pr-3">
+                                        <div class="flex items-center gap-3">
+                                            <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-orange-100 text-orange-600 font-semibold">{{ strtoupper(substr($s->nomor_surat,0,2)) }}</span>
+                                            <div>
+                                                <p class="font-semibold text-slate-800">{{ $s->nomor_surat }}</p>
+                                                @if(isset($s->is_from_guest) && $s->is_from_guest)
+                                                    <span class="inline-flex items-center text-[11px] uppercase tracking-widest text-blue-600 font-semibold">Guest</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-3 py-5">
+                                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-100">
+                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                                            {{ $s->jenis->nama_jenis_surat ?? '-' }}
+                                        </span>
+                                    </td>
+                                    <td class="px-3 py-5 text-slate-600">{{ $s->Pengirim }}</td>
+                                    <td class="px-3 py-5 text-slate-600">{{ optional($s->tanggal_surat)?->format('d M Y') ?? '-' }}</td>
+                                    <td class="px-3 py-5 text-slate-600">{{ optional($s->tanggal_masuk)?->format('d M Y') ?? '-' }}</td>
+                                    <td class="px-3 py-5 text-slate-600 max-w-[180px]">
+                                        @if($s->Keterangan)
+                                            <p class="text-sm leading-relaxed">{{ $s->Keterangan }}</p>
+                                        @else
+                                            <span class="text-slate-400 italic">Tidak ada catatan</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-3 py-5">
+                                        <div class="flex flex-wrap gap-2">
+                                            @if($s->file_path)
+                                                <a href="{{ Storage::url($s->file_path) }}" target="_blank" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-600 text-xs font-semibold">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                                    PDF
+                                                </a>
+                                            @endif
+                                            @if(auth()->user()->role === 'administrasi')
+                                                <a href="{{ route('administrasi.surat.edit',$s) }}" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-100 text-amber-600 text-xs font-semibold">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5"/><path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.121 2.121 0 013 3L13 14l-4 1 1-4 8.5-8.5z"/></svg>
+                                                    Edit
+                                                </a>
+                                                <form action="{{ route('administrasi.surat.destroy',$s) }}" method="POST" class="inline delete-form">
+                                                    @csrf @method('DELETE')
+                                                    <button type="button" class="delete-btn inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-rose-100 text-rose-600 text-xs font-semibold" data-surat-jenissurat="{{ $s->jenis->nama_jenis_surat ?? '-' }}" data-surat-pengirim="{{ $s->Pengirim }}">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                        Hapus
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-5 text-right">
+                                        <div class="inline-flex bg-slate-100/80 border border-slate-200 rounded-xl p-1.5" data-status-control="{{ $s->id }}">
+                                            <button type="button" data-value="menunggu" class="px-3 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-widest text-slate-400">Menunggu</button>
+                                            <button type="button" data-value="proses" class="px-3 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-widest text-slate-400">Proses</button>
+                                            <button type="button" data-value="selesai" class="px-3 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-widest text-slate-400">Selesai</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="8" class="py-16 text-center text-slate-500">Belum ada surat terdata.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-        @endif
+
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-8 py-6 border-t border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <a href="{{ route('surat.export') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-sm font-semibold shadow hover:from-emerald-600 hover:to-teal-600">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                            Export Excel
+                        </a>
+                        <span class="text-xs text-slate-400 uppercase tracking-[0.25em]">{{ $surat->total() }} Surat</span>
+                    </div>
+                    @if($surat->hasPages())
+                        <div class="rounded-2xl bg-white/80 shadow-inner px-4 py-3 border border-slate-100">
+                            {{ $surat->appends(request()->query())->links('pagination::tailwind') }}
+                        </div>
+                    @endif
+                </div>
+            </section>
+
+            <aside class="space-y-6">
+                <div class="bg-white/90 backdrop-blur rounded-3xl shadow-xl border border-white/50 p-6">
+                    <h3 class="text-lg font-semibold text-slate-800">Arsip Surat</h3>
+                    <p class="text-sm text-slate-500">Surat yang telah disimpan dengan keterangan arsip akan muncul di sini.</p>
+                    <div class="mt-4 space-y-4" id="arsipList">
+                        @forelse($archivedSurat as $item)
+                            <article class="p-4 rounded-2xl border border-slate-100 bg-slate-50/80">
+                                <div class="flex justify-between items-start gap-3">
+                                    <div>
+                                        <p class="text-sm font-semibold text-slate-700">{{ $item->nomor_surat }}</p>
+                                        <p class="text-xs text-slate-500">{{ optional($item->tanggal_surat)?->format('d M Y') ?? '-' }}</p>
+                                    </div>
+                                    <span class="inline-flex px-2 py-1 rounded-lg bg-amber-100 text-amber-600 text-xs font-semibold">{{ $item->jenis->nama_jenis_surat ?? '-' }}</span>
+                                </div>
+                                <p class="mt-3 text-sm text-slate-600">{{ $item->Pengirim }}</p>
+                                <div class="mt-4 flex items-center justify-between text-xs text-slate-400">
+                                    <span>Masuk: {{ optional($item->tanggal_masuk)?->format('d M Y') ?? '-' }}</span>
+                                    <span>Diupdate: {{ optional($item->updated_at)?->format('d M Y - H:i') }}</span>
+                                </div>
+                            </article>
+                        @empty
+                            <div class="p-6 rounded-2xl border border-dashed border-slate-200 text-center text-slate-400">Belum ada surat yang diarsipkan.</div>
+                        @endforelse
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-500 to-amber-400 text-white rounded-3xl shadow-xl p-6">
+                    <h3 class="text-lg font-semibold">Catatan Aktivitas</h3>
+                    <p class="text-sm text-orange-50/80">Status setiap surat tersimpan secara lokal dan dapat diperbarui kapan saja tanpa mengubah data utama.</p>
+                    <ul class="mt-5 space-y-4 text-sm text-orange-50">
+                        <li class="flex items-start gap-3">
+                            <span class="mt-1 inline-block h-2.5 w-2.5 rounded-full bg-white/70"></span>
+                            <span>Tombol status menunggu/proses/selesai tercatat untuk masing-masing surat.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="mt-1 inline-block h-2.5 w-2.5 rounded-full bg-white/70"></span>
+                            <span>Gunakan arsip untuk memantau dokumen dengan keterangan arsip secara cepat.</span>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
     </div>
 </div>
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', () => {
+            const storedStatus = JSON.parse(localStorage.getItem('administrasi-surat-status') || '{}');
+
+            document.querySelectorAll('[data-status-control]').forEach(group => {
+                const id = group.getAttribute('data-status-control');
+                const buttons = group.querySelectorAll('button[data-value]');
+                const current = storedStatus[id] || 'menunggu';
+
+                buttons.forEach(button => {
+                    if (button.dataset.value === current) {
+                        button.classList.add('bg-white', 'text-orange-500', 'shadow');
+                    }
+
+                    button.addEventListener('click', () => {
+                        buttons.forEach(btn => btn.classList.remove('bg-white', 'text-orange-500', 'shadow'));
+                        button.classList.add('bg-white', 'text-orange-500', 'shadow');
+                        storedStatus[id] = button.dataset.value;
+                        localStorage.setItem('administrasi-surat-status', JSON.stringify(storedStatus));
+                    });
+                });
+            });
+
             @if(session('success'))
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
                     text: '{{ session('success') }}',
-                    confirmButtonText: 'OK'
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#eb5120'
                 });
             @endif
 
-            //Delete confirmation
             const deleteButtons = document.querySelectorAll('.delete-btn');
             deleteButtons.forEach(button => {
                 button.addEventListener('click', function(e) {
                     e.preventDefault();
-                    
+
                     const form = this.closest('.delete-form');
-                    const jenissurat = this.getAttribute('data-surat-jenissurat');
+                    const jenis = this.getAttribute('data-surat-jenissurat');
                     const pengirim = this.getAttribute('data-surat-pengirim');
-                    
+
                     Swal.fire({
                         title: 'Yakin ingin menghapus?',
-                        html: `
-                            <div class="text-left">
-                                <p class="mb-2"><strong>Jenis Surat:</strong> ${jenissurat}</p>
-                                <p><strong>Pengirim:</strong> ${pengirim}</p>
-                            </div>
-                        `,
+                        html: `<div class="text-left"><p class="mb-2"><strong>Jenis:</strong> ${jenis}</p><p><strong>Pengirim:</strong> ${pengirim}</p></div>`,
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#ef4444',
@@ -320,5 +271,4 @@
         });
     </script>
 @endpush
-
 @endsection
