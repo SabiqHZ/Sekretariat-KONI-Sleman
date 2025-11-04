@@ -1,195 +1,274 @@
-// Smooth scroll function
-function scrollToSection(id) {
-    const section = document.getElementById(id);
-    if (section) {
-        section.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-        });
-    }
-}
+const $ = (selector, scope = document) => scope.querySelector(selector);
+const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
 
-// Make scrollToSection available globally
-window.scrollToSection = scrollToSection;
-
-// Intersection Observer for scroll animations
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: "0px 0px -50px 0px",
+const palette = {
+    primary: '#eb5120',
+    secondary: '#f2d52c',
+    ink: '#1e3a8a',
 };
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-        }
-    });
-}, observerOptions);
+window.scrollToSection = (id) => {
+    const section = document.getElementById(id);
+    if (!section) return;
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
 
-// Initialize animations when DOM is ready
-document.addEventListener("DOMContentLoaded", () => {
-    // Observe stat cards
-    const statCards = document.querySelectorAll(".stat-card");
-    statCards.forEach((card) => {
-        observer.observe(card);
-    });
+const activateNavOnScroll = () => {
+    const sections = $$('section[id]');
+    const navButtons = $$('.nav-pill');
 
-    // Observe action cards
-    const actionCards = document.querySelectorAll(".action-card");
-    actionCards.forEach((card) => {
-        observer.observe(card);
-    });
-
-    // Observe activity items
-    const activityItems = document.querySelectorAll(".activity-item");
-    activityItems.forEach((item) => {
-        observer.observe(item);
-    });
-
-    // Add active state to navigation based on scroll position
-    const sections = document.querySelectorAll("section[id]");
-    const navButtons = document.querySelectorAll("nav .btn");
-
-    window.addEventListener("scroll", () => {
-        let current = "";
-
+    const highlight = () => {
+        const scrollY = window.scrollY + 120;
+        let activeId = sections[0]?.id;
         sections.forEach((section) => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-
-            if (window.pageYOffset >= sectionTop - 200) {
-                current = section.getAttribute("id");
+            if (scrollY >= section.offsetTop) {
+                activeId = section.id;
             }
         });
-
         navButtons.forEach((btn) => {
-            btn.classList.remove("active");
-            if (btn.getAttribute("onclick")?.includes(current)) {
-                btn.classList.add("active");
-            }
+            btn.classList.toggle('active', btn.getAttribute('onclick')?.includes(activeId));
         });
-    });
-
-    // Add animation delay to elements
-    const animatedElements = document.querySelectorAll(
-        ".stat-card, .action-card, .activity-item",
-    );
-    animatedElements.forEach((el, index) => {
-        el.style.animationDelay = `${(index % 3) * 0.2}s`;
-    });
-
-    // Counter animation for statistics
-    const animateCounter = (element, target) => {
-        let current = 0;
-        const increment = target / 50;
-        const timer = setInterval(() => {
-            current += increment;
-            if (current >= target) {
-                element.textContent = target;
-                clearInterval(timer);
-            } else {
-                element.textContent = Math.floor(current);
-            }
-        }, 30);
     };
 
-    // Animate counters when they become visible
-    const counterObserver = new IntersectionObserver(
-        (entries) => {
-            entries.forEach((entry) => {
-                if (
-                    entry.isIntersecting &&
-                    !entry.target.classList.contains("animated")
-                ) {
-                    const target = parseInt(entry.target.textContent);
-                    entry.target.textContent = "0";
-                    animateCounter(entry.target, target);
-                    entry.target.classList.add("animated");
-                }
-            });
-        },
-        { threshold: 0.5 },
-    );
+    highlight();
+    window.addEventListener('scroll', highlight, { passive: true });
+};
 
-    // Observe stat numbers
-    const statNumbers = document.querySelectorAll(".stat-number");
-    statNumbers.forEach((num) => {
-        counterObserver.observe(num);
+const setupProfileDropdown = () => {
+    const trigger = $('#profileButton');
+    const menu = $('#dropdownMenu');
+    if (!trigger || !menu) return;
+
+    trigger.addEventListener('click', (event) => {
+        event.stopPropagation();
+        menu.classList.toggle('show');
     });
-});
 
-// Handle window resize
-let resizeTimer;
-window.addEventListener("resize", () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-        // Re-calculate positions or animations if needed
-        console.log("Window resized");
-    }, 250);
-});
-
-// Add loading state handler
-window.addEventListener("load", () => {
-    document.body.classList.add("loaded");
-});
-
-// Prevent default anchor behavior for smooth scroll
-document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener("click", function (e) {
-        e.preventDefault();
-        const target = this.getAttribute("href").substring(1);
-        scrollToSection(target);
-    });
-});
-// ===================================
-// PROFILE DROPDOWN FUNCTIONALITY
-// ===================================
-
-document.addEventListener("DOMContentLoaded", function () {
-    const profileButton = document.getElementById("profileButton");
-    const dropdownMenu = document.getElementById("dropdownMenu");
-
-    if (profileButton && dropdownMenu) {
-        // Toggle dropdown when clicking profile button
-        profileButton.addEventListener("click", function (e) {
-            e.stopPropagation();
-            dropdownMenu.classList.toggle("show");
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener("click", function (e) {
-            if (
-                !profileButton.contains(e.target) &&
-                !dropdownMenu.contains(e.target)
-            ) {
-                dropdownMenu.classList.remove("show");
-            }
-        });
-
-        // Close dropdown when pressing Escape key
-        document.addEventListener("keydown", function (e) {
-            if (e.key === "Escape") {
-                dropdownMenu.classList.remove("show");
-            }
-        });
-
-        // Prevent dropdown from closing when clicking inside it
-        dropdownMenu.addEventListener("click", function (e) {
-            // Allow form submission and links to work
-            if (e.target.tagName !== "A" && e.target.tagName !== "BUTTON") {
-                e.stopPropagation();
-            }
-        });
-    }
-});
-
-// Optional: Add smooth close animation before navigation
-document.querySelectorAll(".dropdown-item").forEach((item) => {
-    item.addEventListener("click", function (e) {
-        const dropdown = document.getElementById("dropdownMenu");
-        if (dropdown && !this.closest("form")) {
-            // Add a small delay for visual feedback
-            dropdown.style.transition = "all 0.2s ease";
+    document.addEventListener('click', (event) => {
+        if (!menu.contains(event.target) && !trigger.contains(event.target)) {
+            menu.classList.remove('show');
         }
     });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            menu.classList.remove('show');
+        }
+    });
+};
+
+const withFallback = (value, fallback = 0) => (Number.isFinite(value) ? value : fallback);
+
+const buildTrendChart = (canvas, dataset) => {
+    if (!canvas || !window.Chart) return null;
+    const ctx = canvas.getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, 'rgba(235, 81, 32, 0.25)');
+    gradient.addColorStop(1, 'rgba(235, 81, 32, 0.02)');
+
+    const labels = dataset.map((item) => item.label);
+    const values = dataset.map((item) => withFallback(item.total));
+
+    return new window.Chart(canvas, {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [
+                {
+                    label: 'Total surat',
+                    data: values,
+                    borderColor: palette.primary,
+                    backgroundColor: gradient,
+                    fill: true,
+                    tension: 0.35,
+                    pointRadius: 4,
+                    pointBackgroundColor: palette.secondary,
+                    pointBorderWidth: 0,
+                },
+            ],
+        },
+        options: {
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label(context) {
+                            return `${context.parsed.y} surat`;
+                        },
+                    },
+                },
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { color: 'rgba(30,58,138,0.6)' },
+                },
+                y: {
+                    grid: { color: 'rgba(30,58,138,0.1)' },
+                    ticks: {
+                        precision: 0,
+                        color: 'rgba(30,58,138,0.6)',
+                        callback(value) {
+                            return `${value}`;
+                        },
+                    },
+                },
+            },
+        },
+    });
+};
+
+const buildOriginChart = (canvas, dataset) => {
+    if (!canvas || !window.Chart) return null;
+    const values = Object.values(dataset || {});
+    const labels = Object.keys(dataset || {}).map((key) => key.charAt(0).toUpperCase() + key.slice(1));
+
+    return new window.Chart(canvas, {
+        type: 'doughnut',
+        data: {
+            labels,
+            datasets: [
+                {
+                    data: values,
+                    backgroundColor: [palette.primary, palette.secondary],
+                    borderWidth: 0,
+                },
+            ],
+        },
+        options: {
+            cutout: '62%',
+            plugins: {
+                legend: { position: 'bottom', labels: { color: 'rgba(30,58,138,0.7)' } },
+            },
+        },
+    });
+};
+
+const buildJenisChart = (canvas, dataset) => {
+    if (!canvas || !window.Chart) return null;
+    const labels = dataset.map((item) => item.jenis);
+    const values = dataset.map((item) => withFallback(item.total));
+
+    return new window.Chart(canvas, {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [
+                {
+                    data: values,
+                    backgroundColor: palette.primary,
+                    borderRadius: 12,
+                },
+            ],
+        },
+        options: {
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label(context) {
+                            return `${context.parsed.y} surat`;
+                        },
+                    },
+                },
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { color: 'rgba(30,58,138,0.7)' },
+                },
+                y: {
+                    grid: { color: 'rgba(30,58,138,0.08)' },
+                    ticks: {
+                        precision: 0,
+                        color: 'rgba(30,58,138,0.6)',
+                    },
+                },
+            },
+        },
+    });
+};
+
+const setupCharts = () => {
+    const data = window.dashboardData || {};
+    const trendCanvas = document.getElementById('suratTrendChart');
+    const jenisCanvas = document.getElementById('jenisChart');
+    const originCanvas = document.getElementById('originChart');
+    const emptyState = document.querySelector('[data-chart-empty]');
+    let trendChart = null;
+
+    const buildAll = () => {
+        const monthly = Array.isArray(data.monthlyCounts) ? data.monthlyCounts : [];
+        const jenis = Array.isArray(data.suratByJenis) ? data.suratByJenis : [];
+        const origin = data.originDataset || {};
+
+        if (trendChart) {
+            trendChart.destroy();
+        }
+        if (trendCanvas) {
+            if (monthly.length) {
+                trendChart = buildTrendChart(trendCanvas, monthly);
+                if (emptyState) emptyState.hidden = true;
+            } else if (emptyState) {
+                emptyState.hidden = false;
+            }
+        }
+
+        if (jenisCanvas) {
+            if (jenisCanvas.chart) jenisCanvas.chart.destroy();
+            jenisCanvas.chart = buildJenisChart(jenisCanvas, jenis);
+        }
+
+        if (originCanvas) {
+            if (originCanvas.chart) originCanvas.chart.destroy();
+            originCanvas.chart = buildOriginChart(originCanvas, origin);
+        }
+    };
+
+    buildAll();
+
+    const refreshButton = document.getElementById('refreshTrend');
+    if (refreshButton) {
+        refreshButton.addEventListener('click', () => {
+            if (!Array.isArray(data.monthlyCounts)) return;
+            data.monthlyCounts = data.monthlyCounts.map((item) => ({
+                ...item,
+                total: Math.max(0, Math.round(item.total * (0.9 + Math.random() * 0.25))),
+            }));
+            buildAll();
+        });
+    }
+};
+
+const setupLetterFilter = () => {
+    const buttons = $$('[data-letter-filter]');
+    const rows = $$('[data-letter-item]');
+    if (!buttons.length || !rows.length) return;
+
+    const applyFilter = (filter) => {
+        rows.forEach((row) => {
+            const origin = row.dataset.origin;
+            const visible = filter === 'all' || origin === filter;
+            row.style.display = visible ? '' : 'none';
+        });
+    };
+
+    buttons.forEach((button) => {
+        button.addEventListener('click', () => {
+            buttons.forEach((btn) => btn.classList.remove('active'));
+            button.classList.add('active');
+            applyFilter(button.dataset.letterFilter || 'all');
+        });
+    });
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    activateNavOnScroll();
+    setupProfileDropdown();
+    setupCharts();
+    setupLetterFilter();
+});
+
+window.addEventListener('load', () => {
+    document.body.classList.add('loaded');
 });
