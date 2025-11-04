@@ -1,195 +1,175 @@
-// Smooth scroll function
-function scrollToSection(id) {
-    const section = document.getElementById(id);
-    if (section) {
-        section.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-        });
-    }
+const STATUS_STORAGE_KEY = "administrasi-dashboard-status";
+const PIN_STORAGE_KEY = "administrasi-dashboard-pin";
+
+document.addEventListener("DOMContentLoaded", () => {
+    initProfileDropdown();
+    initStatusControls();
+    initRecentSearch();
+    initArchiveFilters();
+    initSmoothScroll();
+});
+
+function initProfileDropdown() {
+    const toggle = document.getElementById("profileButton");
+    const menu = document.getElementById("dropdownMenu");
+
+    if (!toggle || !menu) return;
+
+    toggle.addEventListener("click", (event) => {
+        event.stopPropagation();
+        menu.classList.toggle("show");
+    });
+
+    document.addEventListener("click", (event) => {
+        if (!menu.contains(event.target) && !toggle.contains(event.target)) {
+            menu.classList.remove("show");
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            menu.classList.remove("show");
+        }
+    });
 }
 
-// Make scrollToSection available globally
-window.scrollToSection = scrollToSection;
+function initStatusControls() {
+    const storedStatus = JSON.parse(localStorage.getItem(STATUS_STORAGE_KEY) || "{}");
 
-// Intersection Observer for scroll animations
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: "0px 0px -50px 0px",
-};
+    document.querySelectorAll("[data-status-control]").forEach((group) => {
+        const id = group.getAttribute("data-status-control");
+        const buttons = group.querySelectorAll("button[data-value]");
+        const current = storedStatus[id] || "menunggu";
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-        }
-    });
-}, observerOptions);
-
-// Initialize animations when DOM is ready
-document.addEventListener("DOMContentLoaded", () => {
-    // Observe stat cards
-    const statCards = document.querySelectorAll(".stat-card");
-    statCards.forEach((card) => {
-        observer.observe(card);
-    });
-
-    // Observe action cards
-    const actionCards = document.querySelectorAll(".action-card");
-    actionCards.forEach((card) => {
-        observer.observe(card);
-    });
-
-    // Observe activity items
-    const activityItems = document.querySelectorAll(".activity-item");
-    activityItems.forEach((item) => {
-        observer.observe(item);
-    });
-
-    // Add active state to navigation based on scroll position
-    const sections = document.querySelectorAll("section[id]");
-    const navButtons = document.querySelectorAll("nav .btn");
-
-    window.addEventListener("scroll", () => {
-        let current = "";
-
-        sections.forEach((section) => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-
-            if (window.pageYOffset >= sectionTop - 200) {
-                current = section.getAttribute("id");
+        buttons.forEach((button) => {
+            if (button.dataset.value === current) {
+                button.classList.add("active");
             }
-        });
 
-        navButtons.forEach((btn) => {
-            btn.classList.remove("active");
-            if (btn.getAttribute("onclick")?.includes(current)) {
-                btn.classList.add("active");
-            }
-        });
-    });
-
-    // Add animation delay to elements
-    const animatedElements = document.querySelectorAll(
-        ".stat-card, .action-card, .activity-item",
-    );
-    animatedElements.forEach((el, index) => {
-        el.style.animationDelay = `${(index % 3) * 0.2}s`;
-    });
-
-    // Counter animation for statistics
-    const animateCounter = (element, target) => {
-        let current = 0;
-        const increment = target / 50;
-        const timer = setInterval(() => {
-            current += increment;
-            if (current >= target) {
-                element.textContent = target;
-                clearInterval(timer);
-            } else {
-                element.textContent = Math.floor(current);
-            }
-        }, 30);
-    };
-
-    // Animate counters when they become visible
-    const counterObserver = new IntersectionObserver(
-        (entries) => {
-            entries.forEach((entry) => {
-                if (
-                    entry.isIntersecting &&
-                    !entry.target.classList.contains("animated")
-                ) {
-                    const target = parseInt(entry.target.textContent);
-                    entry.target.textContent = "0";
-                    animateCounter(entry.target, target);
-                    entry.target.classList.add("animated");
-                }
+            button.addEventListener("click", () => {
+                buttons.forEach((btn) => btn.classList.remove("active"));
+                button.classList.add("active");
+                storedStatus[id] = button.dataset.value;
+                localStorage.setItem(STATUS_STORAGE_KEY, JSON.stringify(storedStatus));
+                updateStatusFilters(storedStatus);
             });
-        },
-        { threshold: 0.5 },
-    );
-
-    // Observe stat numbers
-    const statNumbers = document.querySelectorAll(".stat-number");
-    statNumbers.forEach((num) => {
-        counterObserver.observe(num);
+        });
     });
-});
 
-// Handle window resize
-let resizeTimer;
-window.addEventListener("resize", () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-        // Re-calculate positions or animations if needed
-        console.log("Window resized");
-    }, 250);
-});
+    updateStatusFilters(storedStatus);
+}
 
-// Add loading state handler
-window.addEventListener("load", () => {
-    document.body.classList.add("loaded");
-});
+function updateStatusFilters(statusCollection) {
+    const tableRows = document.querySelectorAll("#recentTableBody tr");
+    const filterGroups = document.querySelectorAll("[data-status-group]");
 
-// Prevent default anchor behavior for smooth scroll
-document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener("click", function (e) {
-        e.preventDefault();
-        const target = this.getAttribute("href").substring(1);
-        scrollToSection(target);
+    filterGroups.forEach((group) => {
+        const buttons = group.querySelectorAll("button[data-status]");
+        buttons.forEach((button) => {
+            if (!button.dataset.bound) {
+                button.dataset.bound = "true";
+                button.addEventListener("click", () => {
+                    buttons.forEach((btn) => btn.classList.remove("active"));
+                    button.classList.add("active");
+                    applyStatusFilter(button.dataset.status || "", statusCollection, tableRows);
+                });
+            }
+        });
     });
-});
-// ===================================
-// PROFILE DROPDOWN FUNCTIONALITY
-// ===================================
 
-document.addEventListener("DOMContentLoaded", function () {
-    const profileButton = document.getElementById("profileButton");
-    const dropdownMenu = document.getElementById("dropdownMenu");
+    const active = document.querySelector("[data-status-group] button.active");
+    applyStatusFilter(active?.dataset.status || "", statusCollection, tableRows);
+}
 
-    if (profileButton && dropdownMenu) {
-        // Toggle dropdown when clicking profile button
-        profileButton.addEventListener("click", function (e) {
-            e.stopPropagation();
-            dropdownMenu.classList.toggle("show");
+function applyStatusFilter(targetStatus, statusCollection, rows) {
+    if (!rows) return;
+
+    rows.forEach((row) => {
+        if (!(row instanceof HTMLElement)) return;
+        const id = row.getAttribute("data-id");
+        const rowStatus = statusCollection[id] || "menunggu";
+        const visible = !targetStatus || targetStatus === "semua" || rowStatus === targetStatus;
+        row.style.display = visible ? "" : "none";
+    });
+}
+
+function initRecentSearch() {
+    const searchInput = document.getElementById("recentSearch");
+    const rows = Array.from(document.querySelectorAll("#recentTableBody tr"));
+
+    if (!searchInput || rows.length === 0) return;
+
+    searchInput.addEventListener("input", (event) => {
+        const query = event.target.value.toLowerCase();
+
+        rows.forEach((row) => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(query) ? "" : "none";
         });
+    });
+}
 
-        // Close dropdown when clicking outside
-        document.addEventListener("click", function (e) {
-            if (
-                !profileButton.contains(e.target) &&
-                !dropdownMenu.contains(e.target)
-            ) {
-                dropdownMenu.classList.remove("show");
-            }
-        });
+function initArchiveFilters() {
+    const filters = document.querySelectorAll("[data-archive-filter]");
+    const cards = document.querySelectorAll("[data-archive-card]");
+    const pinned = JSON.parse(localStorage.getItem(PIN_STORAGE_KEY) || "[]");
 
-        // Close dropdown when pressing Escape key
-        document.addEventListener("keydown", function (e) {
-            if (e.key === "Escape") {
-                dropdownMenu.classList.remove("show");
-            }
-        });
+    cards.forEach((card) => {
+        const pinButton = card.querySelector("[data-pin]");
+        const id = pinButton?.dataset.pin;
 
-        // Prevent dropdown from closing when clicking inside it
-        dropdownMenu.addEventListener("click", function (e) {
-            // Allow form submission and links to work
-            if (e.target.tagName !== "A" && e.target.tagName !== "BUTTON") {
-                e.stopPropagation();
-            }
-        });
-    }
-});
-
-// Optional: Add smooth close animation before navigation
-document.querySelectorAll(".dropdown-item").forEach((item) => {
-    item.addEventListener("click", function (e) {
-        const dropdown = document.getElementById("dropdownMenu");
-        if (dropdown && !this.closest("form")) {
-            // Add a small delay for visual feedback
-            dropdown.style.transition = "all 0.2s ease";
+        if (id && pinned.includes(id)) {
+            card.classList.add("pinned");
         }
+
+        pinButton?.addEventListener("click", () => {
+            if (!id) return;
+            const index = pinned.indexOf(id);
+            if (index >= 0) {
+                pinned.splice(index, 1);
+                card.classList.remove("pinned");
+            } else {
+                pinned.push(id);
+                card.classList.add("pinned");
+            }
+            localStorage.setItem(PIN_STORAGE_KEY, JSON.stringify(pinned));
+        });
     });
-});
+
+    filters.forEach((filter) => {
+        filter.addEventListener("click", () => {
+            filters.forEach((btn) => btn.classList.remove("active"));
+            filter.classList.add("active");
+            const type = filter.dataset.archiveFilter;
+            const now = new Date();
+
+            cards.forEach((card) => {
+                const created = card.dataset.created ? new Date(card.dataset.created) : null;
+                let visible = true;
+
+                if (created) {
+                    if (type === "bulan") {
+                        visible =
+                            created.getMonth() === now.getMonth() &&
+                            created.getFullYear() === now.getFullYear();
+                    } else if (type === "tahun") {
+                        visible = created.getFullYear() === now.getFullYear();
+                    }
+                }
+
+                card.style.display = visible || type === "all" ? "" : "none";
+            });
+        });
+    });
+}
+
+function initSmoothScroll() {
+    document.querySelectorAll("[data-scroll]").forEach((trigger) => {
+        trigger.addEventListener("click", () => {
+            const targetId = trigger.getAttribute("data-scroll");
+            const target = document.getElementById(targetId);
+            if (!target) return;
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+    });
+}

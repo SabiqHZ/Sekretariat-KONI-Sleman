@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,164 +12,305 @@
     {{-- Styles --}}
     @vite(['resources/css/dashboard-admin.css', 'resources/js/dashboard-admin.js'])
 </head>
-
 <body>
-    {{-- Header --}}
-    <header>
-        <div class="header-left">
-            <img src="{{ asset('images/koni1.png') }}" alt="KONI Sleman" class="header-logo">
-            <h1>Dashboard Administrasi</h1>
-        </div>
-        <nav>
-            <button class="btn" onclick="scrollToSection('overview')">Overview</button>
-            <button class="btn" onclick="scrollToSection('actions')">Aksi Cepat</button>
-            <div>
-
-                <!-- Profile Dropdown -->
-                <div class="profile-dropdown">
-                    <button class="profile-button" id="profileButton" type="button">
-                        <svg class="profile-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+    <div class="dashboard-shell">
+        {{-- Sidebar --}}
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-header">
+                <img src="{{ asset('images/koni1.png') }}" alt="KONI Sleman" class="sidebar-logo">
+                <div>
+                    <span class="sidebar-role">Administrasi</span>
+                    <h1 class="sidebar-title">KONI Sleman</h1>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="{{ route('administrasi.dashboard') }}" class="sidebar-link active">
+                    <span class="sidebar-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m0 0H5a2 2 0 01-2-2v-5a2 2 0 012-2h3m4 9h3a2 2 0 002-2v-5a2 2 0 00-2-2h-3" />
                         </svg>
-                    </button>
+                    </span>
+                    Dashboard
+                </a>
+                <a href="{{ route('administrasi.surat.index') }}" class="sidebar-link">
+                    <span class="sidebar-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </span>
+                    Kelola Surat
+                </a>
+                <button class="sidebar-link" data-scroll="arsip-panel">
+                    <span class="sidebar-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-6m-4 0H4" />
+                        </svg>
+                    </span>
+                    Arsip Surat
+                </button>
+                <button class="sidebar-link" data-scroll="activity-panel">
+                    <span class="sidebar-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.938 4.938a10 10 0 1114.142 14.142A10 10 0 014.938 4.938z" />
+                        </svg>
+                    </span>
+                    Aktivitas
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <p>Memantau penertiban, arsip, dan disposisi surat instansi</p>
+            </div>
+        </aside>
 
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <a href="{{ route('profile.edit') }}" class="dropdown-item">
-                            <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                            </svg>
-                            <span>Edit Profile</span>
-                        </a>
-
-                        <form action="{{ route('logout') }}" method="POST" class="dropdown-form">
-                            @csrf
-                            <button type="submit" class="dropdown-item dropdown-item-danger">
-                                <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                                </svg>
-                                <span>Keluar</span>
-                            </button>
-                        </form>
-                    </div>
+        {{-- Main Content --}}
+        <div class="dashboard-main">
+            <header class="dashboard-header">
+                <div class="header-info">
+                    <p class="header-label">Dashboard Administrasi Surat</p>
+                    <h2 class="header-title">Selamat datang kembali, {{ auth()->user()->name }}!</h2>
+                    <p class="header-subtitle">Kelola surat masuk, arsip, dan disposisi secara terpusat</p>
                 </div>
-            </div>
-        </nav>
-    </header>
-    {{-- Main Content --}}
-    <main>
-        {{-- Welcome Section --}}
-        <section id="overview" class="welcome-section">
-            <div class="welcome-content">
-                <h2>Selamat Datang, Administrasi!</h2>
-                <p>Kelola dan monitor sistem administrasi surat dengan mudah</p>
-            </div>
-        </section>
-
-        {{-- Statistics Section --}}
-        <section class="stats-section">
-            <div class="container">
-                <div class="stats-grid">
-                    {{-- Total Surat Card --}}
-                    <div class="stat-card card-blue">
-                        <div class="stat-content">
-                            <div class="stat-info">
-                                <h3>Total Surat</h3>
-                                <p class="stat-number">{{ $totalSurat }}</p>
-                                <p class="stat-desc">Semua surat dalam sistem</p>
+                <div class="header-actions">
+                    <a href="{{ route('administrasi.surat.create') }}" class="header-btn btn-primary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Tambah Surat
+                    </a>
+                    <a href="{{ route('administrasi.jenis-surat.create') }}" class="header-btn btn-outline">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
+                        </svg>
+                        Tambah Jenis
+                    </a>
+                    <div class="header-profile" id="profileDropdown">
+                        <button type="button" class="profile-toggle" id="profileButton">
+                            <span class="profile-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 2)) }}</span>
+                            <span class="profile-name">{{ auth()->user()->name }}</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div class="profile-menu" id="dropdownMenu">
+                            <div class="profile-summary">
+                                <p class="summary-name">{{ auth()->user()->name }}</p>
+                                <p class="summary-role">Administrator</p>
                             </div>
-                            <div class="stat-icon icon-blue">
+                            <a href="{{ route('profile.edit') }}" class="profile-menu-item">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.121 2.121 0 013 3L13 14l-4 1 1-4 8.5-8.5z" />
                                 </svg>
-                            </div>
-                        </div>
-                        <div class="stat-footer">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                            </svg>
-                            <span>Statistik keseluruhan</span>
-                        </div>
-                    </div>
-
-                    {{-- Surat Masuk Card --}}
-                    <div class="stat-card card-green">
-                        <div class="stat-content">
-                            <div class="stat-info">
-                                <h3>Surat Masuk</h3>
-                                <p class="stat-number">{{ $suratFromGuest }}</p>
-                                <p class="stat-desc">Surat dari guest/pengunjung</p>
-                            </div>
-                            <div class="stat-icon icon-green">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="stat-footer">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span>Perlu ditindaklanjuti</span>
+                                Edit Profile
+                            </a>
+                            <form action="{{ route('logout') }}" method="POST" class="profile-menu-item profile-logout">
+                                @csrf
+                                <button type="submit">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 4v16" />
+                                    </svg>
+                                    Keluar
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </header>
 
-        {{-- Quick Actions Section --}}
-        <section id="actions" class="actions-section">
-            <div class="container">
-                <div class="section-header">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                    <h3>Aksi Cepat</h3>
+            {{-- Stats --}}
+            <section class="stats-grid">
+                <article class="stat-card card-total">
+                    <div>
+                        <p class="stat-label">Total Surat</p>
+                        <h3 class="stat-value">{{ number_format($totalSurat) }}</h3>
+                        <span class="stat-caption">Semua surat terdata dalam sistem</span>
+                    </div>
+                    <span class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 4h8l4 4v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2z" />
+                        </svg>
+                    </span>
+                </article>
+                <article class="stat-card card-incoming">
+                    <div>
+                        <p class="stat-label">Surat Masuk Bulan Ini</p>
+                        <h3 class="stat-value">{{ number_format($suratMasukBulanIni) }}</h3>
+                        <span class="stat-caption">Diterima hingga hari ini</span>
+                    </div>
+                    <span class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                    </span>
+                </article>
+                <article class="stat-card card-outgoing">
+                    <div>
+                        <p class="stat-label">Surat Keluar Bulan Ini</p>
+                        <h3 class="stat-value">{{ number_format($suratKeluarBulanIni) }}</h3>
+                        <span class="stat-caption">Didistribusikan melalui administrasi</span>
+                    </div>
+                    <span class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18m-6 6l6-6-6-6" />
+                        </svg>
+                    </span>
+                </article>
+                <article class="stat-card card-archive">
+                    <div>
+                        <p class="stat-label">Surat Terarsip</p>
+                        <h3 class="stat-value">{{ number_format($arsipCount) }}</h3>
+                        <span class="stat-caption">Dokumen yang tersimpan rapi</span>
+                    </div>
+                    <span class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 7a2 2 0 012-2h14a2 2 0 012 2v2H3V7z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 9h14v9a2 2 0 01-2 2H7a2 2 0 01-2-2V9z" />
+                        </svg>
+                    </span>
+                </article>
+            </section>
+
+            {{-- Recent Letters & Timeline --}}
+            <section class="dashboard-panels">
+                <div class="panel-card" id="recent-panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3>Daftar Surat Terbaru</h3>
+                            <p>Surat masuk dan keluar yang baru saja tercatat</p>
+                        </div>
+                        <div class="panel-actions">
+                            <input type="text" id="recentSearch" class="panel-search" placeholder="Cari nomor, jenis, pengirim...">
+                            <div class="status-toggle" data-status-group>
+                                <button type="button" data-status="menunggu" class="active">Menunggu</button>
+                                <button type="button" data-status="proses">Proses</button>
+                                <button type="button" data-status="selesai">Selesai</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="recent-table">
+                            <thead>
+                                <tr>
+                                    <th>Nomor</th>
+                                    <th>Jenis</th>
+                                    <th>Pengirim</th>
+                                    <th>Masuk</th>
+                                    <th>Keluar</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentTableBody">
+                                @forelse($recentSurat as $surat)
+                                    <tr data-id="{{ $surat->id }}">
+                                        <td>
+                                            <div class="cell-title">
+                                                <span class="cell-label">{{ $surat->nomor_surat }}</span>
+                                                @if($surat->is_from_guest)
+                                                    <span class="cell-badge">Guest</span>
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td>{{ optional($surat->jenis)->nama_jenis_surat ?? '-' }}</td>
+                                        <td>{{ $surat->Pengirim }}</td>
+                                        <td>{{ optional($surat->tanggal_masuk)?->format('d M Y') ?? '-' }}</td>
+                                        <td>{{ optional($surat->tanggal_surat)?->format('d M Y') ?? '-' }}</td>
+                                        <td>
+                                            <div class="row-status" data-status-control="{{ $surat->id }}">
+                                                <button type="button" data-value="menunggu">Menunggu</button>
+                                                <button type="button" data-value="proses">Proses</button>
+                                                <button type="button" data-value="selesai">Selesai</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="empty-state">Belum ada surat terbaru.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="panel-footer">
+                        <a href="{{ route('administrasi.surat.index') }}" class="panel-link">Lihat semua surat</a>
+                        <div class="panel-metrics">
+                            <span><strong>{{ number_format($suratFromGuest) }}</strong> surat dari guest</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="actions-grid">
-                    {{-- Lihat Surat --}}
-                    <a href="{{ route('administrasi.surat.index') }}" class="action-card action-blue">
-                        <div class="action-content">
-                            <h4>Lihat Surat</h4>
-                            <p>Kelola semua surat</p>
+                <aside class="panel-card" id="activity-panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3>Aktivitas Terakhir</h3>
+                            <p>Jejak pembaruan surat berdasarkan waktu</p>
                         </div>
-                        <div class="action-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                            </svg>
-                        </div>
-                    </a>
+                    </div>
+                    <ul class="activity-timeline">
+                        @forelse($recentActivities as $activity)
+                            <li>
+                                <span class="timeline-dot"></span>
+                                <div class="timeline-content">
+                                    <div class="timeline-header">
+                                        <h4>{{ $activity['title'] }}</h4>
+                                        <time>{{ $activity['timestamp'] }}</time>
+                                    </div>
+                                    <p>{{ $activity['jenis'] ?? 'Jenis surat belum diatur' }} - {{ $activity['pengirim'] }}</p>
+                                    <div class="timeline-meta">
+                                        @if($activity['masuk'])
+                                            <span>Masuk: {{ $activity['masuk'] }}</span>
+                                        @endif
+                                        @if($activity['keluar'])
+                                            <span>Keluar: {{ $activity['keluar'] }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </li>
+                        @empty
+                            <li class="timeline-empty">Belum ada aktivitas terbaru.</li>
+                        @endforelse
+                    </ul>
+                </aside>
+            </section>
 
-                    {{-- Upload Surat --}}
-                    <a href="{{ route('administrasi.surat.create') }}" class="action-card action-green">
-                        <div class="action-content">
-                            <h4>Upload Surat</h4>
-                            <p>Tambah surat baru</p>
-                        </div>
-                        <div class="action-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                            </svg>
-                        </div>
-                    </a>
-
-                    {{-- Laporan --}}
-                    <a href="#" class="action-card action-purple">
-                        <div class="action-content">
-                            <h4>Laporan</h4>
-                            <p>Lihat statistik</p>
-                        </div>
-                        <div class="action-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                            </svg>
-                        </div>
-                    </a>
+            {{-- Archive Panel --}}
+            <section class="panel-card archive-card" id="arsip-panel">
+                <div class="panel-header">
+                    <div>
+                        <h3>Arsip Surat</h3>
+                        <p>Dokumen yang telah disimpan dalam arsip digital</p>
+                    </div>
+                    <div class="archive-actions">
+                        <button type="button" class="archive-filter active" data-archive-filter="all">Semua</button>
+                        <button type="button" class="archive-filter" data-archive-filter="bulan">Bulan Ini</button>
+                        <button type="button" class="archive-filter" data-archive-filter="tahun">Tahun Ini</button>
+                    </div>
                 </div>
-            </div>
-        </section>
-    </main>
+                <div class="archive-grid" id="archiveGrid">
+                    @forelse($archivedHighlight as $surat)
+                        <article class="archive-item" data-archive-card data-created="{{ optional($surat->created_at)?->toIso8601String() }}">
+                            <header>
+                                <h4>{{ $surat->nomor_surat }}</h4>
+                                <span>{{ optional($surat->tanggal_surat)?->format('d M Y') ?? '-' }}</span>
+                            </header>
+                            <p>{{ $surat->Pengirim }}</p>
+                            <footer>
+                                <span class="archive-tag">{{ optional($surat->jenis)->nama_jenis_surat ?? 'Tidak diketahui' }}</span>
+                                <button type="button" class="archive-pin" data-pin="{{ $surat->id }}">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 4l4 4-8 8-4 1 1-4 8-8z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 21h6" />
+                                    </svg>
+                                </button>
+                            </footer>
+                        </article>
+                    @empty
+                        <p class="empty-state">Belum ada surat yang siap diarsipkan.</p>
+                    @endforelse
+                </div>
+            </section>
+        </div>
+    </div>
 </body>
-
 </html>
