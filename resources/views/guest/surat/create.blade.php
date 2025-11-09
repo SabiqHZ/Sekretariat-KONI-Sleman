@@ -69,10 +69,10 @@
                                     <svg class="icon-xs icon-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
                                     </svg>
-                                    Nama Pengirim
+                                    Email Pengirim
                                 </span>
                             </label>
-                            <input type="text" name="guest_name" class="form-input" placeholder="Nama lengkap Anda">
+                            <input type="text" name="guest_email" class="form-input" placeholder="Contoh@gmail.com">
                         </div>
 
                         <!-- Tanggal Surat -->
@@ -90,18 +90,12 @@
 
                             </div>
                         </div>
-
                         <!-- Instansi Pengirim -->
                         <div class="form-group">
                             <label class="form-label">
-                                <span class="label-wrapper">
-                                    <svg class="icon-xs icon-indigo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                    </svg>
-                                    Instansi Pengirim
-                                </span>
+                                <span class="label-wrapper">Instansi Pengirim</span>
                             </label>
-                            <input type="text" name="pengirim" class="form-input" placeholder="Nama instansi atau perorangan">
+                            <input type="text" name="instansi_pengirim" class="form-input" placeholder="Nama instansi">
                         </div>
 
                         <!-- Jenis Surat -->
@@ -226,6 +220,14 @@
 
     {{-- JavaScript --}}
     @vite(['resources/js/kirim-surat.js'])
+    @if (session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            alert(@json(session('success'))); // akan menampilkan "Surat berhasil dikirim!"
+        });
+    </script>
+    @endif
+
 </body>
 
 </html>

@@ -16,10 +16,12 @@ return new class extends Migration
             $table->string('nomor_surat');
             $table->unsignedBigInteger('jenis_surat_id');
             $table->foreign('jenis_surat_id')->references('id')->on('jenis_surat')->onDelete('cascade');
-            $table->string('Pengirim');
+            $table->string('instansi_pengirim');
             $table->date('tanggal_surat');
             $table->date('tanggal_masuk')->nullable();
-            $table->string('Keterangan')->nullable();
+            $table->string('keterangan')->nullable();
+            $table->string('status', 20)
+                ->default('menunggu');
             $table->string('file_path')->nullable();
             $table->timestamps();
         });

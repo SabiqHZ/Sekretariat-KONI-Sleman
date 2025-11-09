@@ -52,7 +52,7 @@
 
                 {{-- name Address --}}
                 <div class="form-group">
-                    <label for="name">{{ __('Posisi Pengguna') }}</label>
+                    <label for="name">{{ __('Nama Pengguna') }}</label>
                     <input
                         id="name"
                         type="name"

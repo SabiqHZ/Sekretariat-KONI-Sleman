@@ -4,40 +4,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>Dashboard Administrasi - KONI Sleman</title>
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 
     {{-- Fonts --}}
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600&family=Lato:wght@400;700&family=Questrial&display=swap" rel="stylesheet">
 
-    {{-- Styles --}}
-    @vite(['resources/css/dashboard-admin.css', 'resources/js/dashboard-admin.js'])
+    {{-- Styles & Scripts --}}
+    @vite([
+    'resources/js/dashboard-admin.js',
+    'resources/css/dashboard-admin-layout.css',
+    'resources/css/dashboard-admin-components.css',
+    'resources/css/dashboard-admin-responsive.css',
+    ])
 </head>
 
 <body>
-    {{-- Header --}}
     <header>
         <div class="header-left">
-            <img src="{{ asset('images/koni1.png') }}" alt="KONI Sleman" class="header-logo">
+            <img src="{{ asset('images/koni-logo.png') }}" alt="KONI Sleman" class="header-logo">
             <h1>Dashboard Administrasi</h1>
         </div>
+
         <nav>
             <button class="btn" onclick="scrollToSection('overview')">Overview</button>
-            <button class="btn" onclick="scrollToSection('actions')">Aksi Cepat</button>
-            <div>
 
-                <!-- Profile Dropdown -->
+            <div class="nav-actions">
+                {{-- Upload Surat --}}
+                <button
+                    type="button"
+                    id="openUploadCard"
+                    class="btn-admin header-cta-upload">
+                    Upload Surat
+                </button>
+
+                {{-- Tambah Jenis Surat --}}
+                <button type="button" id="openJenisCard" class="header-cta-jenis">
+                    <svg class="header-cta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    <span>Tambah Jenis</span>
+                </button>
+
+
+                {{-- Profile --}}
                 <div class="profile-dropdown">
                     <button class="profile-button" id="profileButton" type="button">
                         <svg class="profile-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                            </path>
                         </svg>
                     </button>
 
                     <div class="dropdown-menu" id="dropdownMenu">
                         <a href="{{ route('profile.edit') }}" class="dropdown-item">
                             <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                </path>
                             </svg>
                             <span>Edit Profile</span>
                         </a>
@@ -46,7 +74,9 @@
                             @csrf
                             <button type="submit" class="dropdown-item dropdown-item-danger">
                                 <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                                    </path>
                                 </svg>
                                 <span>Keluar</span>
                             </button>
@@ -56,120 +86,459 @@
             </div>
         </nav>
     </header>
-    {{-- Main Content --}}
-    <main>
-        {{-- Welcome Section --}}
-        <section id="overview" class="welcome-section">
-            <div class="welcome-content">
-                <h2>Selamat Datang, Administrasi!</h2>
-                <p>Kelola dan monitor sistem administrasi surat dengan mudah</p>
-            </div>
-        </section>
 
-        {{-- Statistics Section --}}
+    <main>
+        {{-- Stats --}}
         <section class="stats-section">
             <div class="container">
                 <div class="stats-grid">
-                    {{-- Total Surat Card --}}
-                    <div class="stat-card card-blue">
+                    <div class="stat-card">
                         <div class="stat-content">
                             <div class="stat-info">
                                 <h3>Total Surat</h3>
-                                <p class="stat-number">{{ $totalSurat }}</p>
+                                <p class="stat-number" id="statTotal">{{ $totalSurat ?? 0 }}</p>
                                 <p class="stat-desc">Semua surat dalam sistem</p>
                             </div>
-                            <div class="stat-icon icon-blue">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="stat-footer">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                            </svg>
-                            <span>Statistik keseluruhan</span>
                         </div>
                     </div>
 
-                    {{-- Surat Masuk Card --}}
-                    <div class="stat-card card-green">
+                    <div class="stat-card">
                         <div class="stat-content">
                             <div class="stat-info">
                                 <h3>Surat Masuk</h3>
-                                <p class="stat-number">{{ $suratFromGuest }}</p>
-                                <p class="stat-desc">Surat dari guest/pengunjung</p>
-                            </div>
-                            <div class="stat-icon icon-green">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                                </svg>
+                                <p class="stat-number" id="statGuest">{{ $suratFromGuest ?? 0 }}</p>
+                                <p class="stat-desc">Surat yang dikirim oleh guest/pengunjung</p>
                             </div>
                         </div>
-                        <div class="stat-footer">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span>Perlu ditindaklanjuti</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <div class="stat-info">
+                                <h3>Menunggu Diproses</h3>
+                                <p class="stat-number" id="statPending">0</p>
+                                <p class="stat-desc">Masih menunggu tindak lanjut</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        {{-- Quick Actions Section --}}
-        <section id="actions" class="actions-section">
+        {{-- Recent Letters Table --}}
+        <section id="recent-letters" class="table-section">
             <div class="container">
-                <div class="section-header">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                    <h3>Aksi Cepat</h3>
-                </div>
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <div>
+                            <h3>Surat Terbaru</h3>
+                            <p>Ringkasan surat yang terakhir diinput ke dalam sistem</p>
+                        </div>
 
-                <div class="actions-grid">
-                    {{-- Lihat Surat --}}
-                    <a href="{{ route('administrasi.surat.index') }}" class="action-card action-blue">
-                        <div class="action-content">
-                            <h4>Lihat Surat</h4>
-                            <p>Kelola semua surat</p>
-                        </div>
-                        <div class="action-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                            </svg>
-                        </div>
-                    </a>
+                        <div class="table-actions">
+                            {{-- FILTER --}}
+                            <div class="table-filters">
+                                <div class="search-input">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z">
+                                        </path>
+                                    </svg>
+                                    <input
+                                        type="text"
+                                        id="tableSearch"
+                                        placeholder="Cari nomor surat / pengirim / perihal..." />
+                                </div>
 
-                    {{-- Upload Surat --}}
-                    <a href="{{ route('administrasi.surat.create') }}" class="action-card action-green">
-                        <div class="action-content">
-                            <h4>Upload Surat</h4>
-                            <p>Tambah surat baru</p>
-                        </div>
-                        <div class="action-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                            </svg>
-                        </div>
-                    </a>
+                                <div class="status-filter">
+                                    <select id="statusFilter">
+                                        <option value="">Semua status</option>
+                                        <option value="menunggu">Menunggu</option>
+                                        <option value="diproses">Diproses</option>
+                                        <option value="selesai">Selesai</option>
+                                    </select>
+                                </div>
+                            </div>
 
-                    {{-- Laporan --}}
-                    <a href="#" class="action-card action-purple">
-                        <div class="action-content">
-                            <h4>Laporan</h4>
-                            <p>Lihat statistik</p>
+                            {{-- URUTKAN --}}
+                            <div class="table-sort">
+                                <select id="sortOrder">
+                                    <option value="tanggal_masuk_desc">Tgl masuk: terbaru</option>
+                                    <option value="tanggal_masuk_asc">Tgl masuk: terlama</option>
+                                    <option value="status_asc">Status (A–Z)</option>
+                                    <option value="status_desc">Status (Z–A)</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="action-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                            </svg>
-                        </div>
-                    </a>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="dashboard-table" id="suratTable">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nomor Surat</th>
+                                    <th>Email Pengirim</th>
+                                    <th>Instansi Pengirim</th>
+                                    <th>Jenis</th>
+                                    <th>Tgl Surat</th>
+                                    <th>Tgl Masuk</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($recentSurat ?? [] as $surat)
+                                @php
+                                $status = strtolower($surat->status ?? 'menunggu');
+                                $statusClass = match ($status) {
+                                'diproses' => 'badge-info',
+                                'selesai' => 'badge-success',
+                                default => 'badge-warning',
+                                };
+                                @endphp
+
+                                <tr
+                                    data-id="{{ $surat->id }}"
+                                    data-status="{{ $status }}"
+                                    data-is-guest="{{ $surat->is_from_guest ? '1' : '0' }}"
+                                    data-tanggal-masuk="{{ optional($surat->tanggal_masuk)->format('Y-m-d') }}"
+                                    data-status-url="{{ route('administrasi.surat.update-status', $surat) }}">
+                                    <td>{{ $loop->iteration }}</td>
+
+                                    <td class="text-mono">
+                                        {{ $surat->nomor_surat ?? '-' }}
+                                    </td>
+
+                                    <td>
+                                        {{ $surat->is_from_guest
+            ? ($surat->guest_email ?? 'Guest')
+            : ($surat->guest_email ?? '-') }}
+                                    </td>
+
+                                    <td>
+                                        {{ $surat->instansi_pengirim ?? '-' }}
+                                    </td>
+
+                                    <td class="text-muted">
+                                        {{ optional($surat->jenis)->nama_jenis_surat ?? '-' }}
+                                    </td>
+
+                                    <td>
+                                        {{ optional($surat->tanggal_surat)->format('d M Y') ?? '-' }}
+                                    </td>
+
+                                    <td>
+                                        {{ optional($surat->tanggal_masuk)->format('d M Y') ?? '-' }}
+                                    </td>
+
+                                    <td>
+                                        <span
+                                            class="badge {{ $statusClass }} status-badge"
+                                            data-status-badge="{{ $status }}">
+                                            {{ $status === 'diproses' ? 'Proses' : ucfirst($status) }}
+                                        </span>
+                                    </td>
+
+                                    <td class="table-actions-cell">
+                                        <button
+                                            type="button"
+                                            class="table-detail-toggle"
+                                            data-pdf-url="{{ $surat->file_path ? Storage::url($surat->file_path) : '' }}"
+                                            data-has-file="{{ $surat->file_path ? '1' : '0' }}"
+                                            data-update-url="{{ route('administrasi.surat.update', $surat) }}"
+                                            data-delete-url="{{ route('administrasi.surat.destroy', $surat) }}"
+                                            data-jenis-id="{{ $surat->jenis_surat_id }}"
+                                            data-nomor="{{ $surat->nomor_surat }}"
+                                            data-tanggal-surat="{{ optional($surat->tanggal_surat)->format('Y-m-d') }}"
+                                            data-tanggal-masuk="{{ optional($surat->tanggal_masuk)->format('Y-m-d') }}"
+                                            data-instansi-pengirim="{{ $surat->is_from_guest ? ($surat->guest_email ?? 'Guest') : ($surat->instansi_pengirim ?? '-') }}"
+                                            data-keterangan="{{ e($surat->keterangan) }}">
+                                            Detail
+                                            <span class="table-detail-toggle-caret">▾</span>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                @empty
+                                <tr class="table-empty-row">
+                                    <td colspan="8" class="empty-state">
+                                        Belum ada surat terbaru yang dapat ditampilkan.
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </section>
+        {{-- Tambah Jenis Surat Modal --}}
+        <div id="jenisOverlay" class="upload-overlay">
+            <div class="upload-card">
+                <button type="button" id="closeJenisCard" class="upload-close-btn">&times;</button>
+
+                <div class="upload-card-inner">
+                    <div class="upload-card-header">
+                        <h3>Tambah Jenis Surat</h3>
+                        <p>Tambahkan jenis surat baru tanpa meninggalkan halaman</p>
+                    </div>
+
+                    <form action="{{ route('administrasi.jenis-surat.store') }}" method="POST">
+                        @csrf
+
+                        <div class="upload-form-grid">
+                            <div class="upload-form-group full">
+                                <label for="nama_jenis_surat" class="upload-label">Jenis Surat</label>
+                                <input
+                                    type="text"
+                                    name="nama_jenis_surat"
+                                    id="nama_jenis_surat"
+                                    class="upload-input"
+                                    value="{{ old('nama_jenis_surat') }}"
+                                    required>
+                                @error('nama_jenis_surat')
+                                <p class="upload-error-text">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="upload-actions">
+                            <button type="button" class="upload-cancel-btn" id="cancelJenisBtn">
+                                Batal
+                            </button>
+                            <button type="submit" class="upload-submit-btn">
+                                Simpan Jenis Surat
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {{-- Dropdown global tombol Detail --}}
+        <div id="detailDropdown" class="detail-dropdown">
+            <button
+                type="button"
+                id="detailActionPdf"
+                class="detail-dropdown-item">
+                PDF
+            </button>
+
+            @if(auth()->user()->role === 'administrasi')
+            <button
+                type="button"
+                id="detailActionEdit"
+                class="detail-dropdown-item">
+                Edit
+            </button>
+
+            <button
+                type="button"
+                id="detailActionDelete"
+                class="detail-dropdown-item detail-dropdown-item-danger">
+                Hapus
+            </button>
+            @endif
+        </div>
+
+        {{-- Form delete global --}}
+        <form id="detailDeleteForm" method="POST" style="display:none">
+            @csrf
+            @method('DELETE')
+        </form>
+
+        {{-- Edit Surat Modal --}}
+        <div id="editOverlay" class="upload-overlay">
+            <div class="upload-card">
+                <button type="button" id="closeEditCard" class="upload-close-btn">&times;</button>
+
+                <div class="upload-card-inner">
+                    <div class="upload-card-header">
+                        <h3>Edit Surat</h3>
+                        <p>Perbarui data surat tanpa meninggalkan halaman</p>
+                    </div>
+
+                    <form id="editSuratForm" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="upload-form-grid">
+                            <div class="upload-form-group full">
+                                <label class="upload-label">Jenis Surat</label>
+                                <select name="jenis_surat_id" id="edit-jenis-surat" class="upload-input">
+                                    <option value="">Pilih jenis surat</option>
+                                    @foreach($types as $type)
+                                    <option value="{{ $type->id }}">{{ $type->nama_jenis_surat }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="upload-form-group">
+                                <label class="upload-label">Nomor Surat</label>
+                                <input type="text" name="nomor_surat" id="edit-nomor-surat" class="upload-input">
+                            </div>
+
+                            <div class="upload-form-group">
+                                <label class="upload-label">Tanggal Surat</label>
+                                <input type="date" name="tanggal_surat" id="edit-tanggal-surat" class="upload-input">
+                            </div>
+
+                            <div class="upload-form-group">
+                                <label class="upload-label">Tanggal Masuk</label>
+                                <input type="date" name="tanggal_masuk" id="edit-tanggal-masuk" class="upload-input">
+                            </div>
+                            <div class="upload-form-group">
+                                <label class="upload-label">Instansi Pengirim</label>
+                                <input type="text" name="instansi_pengirim" id="edit-instansi-pengirim" class="upload-input">
+                            </div>
+
+                            <div class="upload-form-group full">
+                                <label class="upload-label">Keterangan</label>
+                                <textarea
+                                    name="keterangan"
+                                    id="edit-keterangan"
+                                    rows="3"
+                                    class="upload-textarea"></textarea>
+                            </div>
+
+                            <div class="upload-form-group full">
+                                <label class="upload-label">Ganti Lampiran PDF (opsional)</label>
+                                <input
+                                    type="file"
+                                    name="file"
+                                    accept="application/pdf"
+                                    class="upload-input">
+                                <p class="upload-file-hint">
+                                    Kosongkan jika tidak ingin mengubah file.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="upload-actions">
+                            <button type="submit" class="upload-submit-btn">
+                                Update Surat
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {{-- Upload Surat Modal --}}
+        <div id="uploadOverlay" class="upload-overlay">
+            <div class="upload-card">
+                <button type="button" id="closeUploadCard" class="upload-close-btn">&times;</button>
+
+                <div class="upload-card-inner">
+                    <div class="upload-card-header">
+                        <h3>Tambah Surat Baru</h3>
+                        <p>Isi data berikut untuk menambahkan surat ke dalam sistem</p>
+                    </div>
+
+                    <form
+                        action="{{ route('administrasi.surat.store') }}"
+                        method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+
+                        <div class="upload-form-grid">
+                            <div class="upload-form-group full">
+                                <label class="upload-label">Jenis Surat</label>
+                                <select name="jenis_surat_id" class="upload-input">
+                                    <option value="">Pilih jenis surat</option>
+                                    @foreach($types as $type)
+                                    <option value="{{ $type->id }}">{{ $type->nama_jenis_surat }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="upload-form-group">
+                                <label class="upload-label">Nomor Surat</label>
+                                <input
+                                    type="text"
+                                    name="nomor_surat"
+                                    class="upload-input"
+                                    placeholder="Contoh: 001/ADM/2024"
+                                    required>
+                            </div>
+
+                            <div class="upload-form-group">
+                                <label class="upload-label">Tanggal Surat</label>
+                                <input
+                                    type="date"
+                                    name="tanggal_surat"
+                                    class="upload-input"
+                                    required>
+                            </div>
+
+                            <div class="upload-form-group">
+                                <label class="upload-label">Tanggal Masuk</label>
+                                <input
+                                    type="date"
+                                    name="tanggal_masuk"
+                                    class="upload-input"
+                                    required>
+                            </div>
+
+                            <div class="upload-form-group">
+                                <label class="upload-label">Instansi Pengirim</label>
+                                <input
+                                    type="text"
+                                    name="instansi_pengirim"
+                                    class="upload-input"
+                                    placeholder="Nama instansi atau perorangan"
+                                    required>
+                            </div>
+
+                            <div class="upload-form-group full">
+                                <label class="upload-label">Keterangan</label>
+                                <textarea
+                                    name="keterangan"
+                                    rows="3"
+                                    class="upload-textarea"
+                                    placeholder="Deskripsi singkat isi surat..."></textarea>
+                            </div>
+
+                            <div class="upload-form-group full">
+                                <label class="upload-label">Lampiran PDF (opsional)</label>
+
+                                <div class="upload-file-box">
+                                    <input
+                                        type="file"
+                                        id="admin-file-upload"
+                                        name="file"
+                                        accept="application/pdf"
+                                        class="upload-file-input">
+
+                                    <div class="upload-file-display" id="admin-drop-zone">
+                                        <span class="upload-file-button">Pilih File</span>
+                                        <span class="upload-file-name" id="admin-file-name-display">
+                                            Tidak ada file dipilih
+                                        </span>
+                                    </div>
+
+                                    <p class="upload-file-hint">
+                                        Format PDF, maksimal 10MB.
+                                    </p>
+
+                                    <div id="admin-file-preview" class="upload-file-preview">
+                                        File terpilih:
+                                        <span id="admin-selected-file-name"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="upload-actions">
+                            <button type="submit" class="upload-submit-btn">
+                                Simpan Surat
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </main>
 </body>
 

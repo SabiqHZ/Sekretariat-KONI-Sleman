@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('surats', function (Blueprint $table) {
             $table->boolean('is_from_guest')->default(false);
-            $table->string('guest_name')->nullable()->after('is_from_guest');
+            $table->string('guest_email')->nullable()->after('is_from_guest');
         });
     }
 

@@ -20,9 +20,9 @@ class GuestSuratController extends Controller
     {
         $validated = $request->validate([
             'nomor_surat' => 'required|string|max:255',
-            'guest_name' => 'required|string|max:255',
+            'guest_email' => 'required|string|max:255',
             'tanggal_surat' => 'nullable|date',
-            'pengirim' => 'required|string|max:255',
+            'instansi_pengirim' => 'required|string|max:255',
             'jenis_surat_id' => 'required|exists:jenis_surat,id',
             'keterangan' => 'nullable|string',
             'file' => 'required|file|mimes:pdf|max:2048'
@@ -35,12 +35,12 @@ class GuestSuratController extends Controller
         Surats::create([
             'nomor_surat' => $validated['nomor_surat'],
             'tanggal_surat' => $validated['tanggal_surat'],
-            'pengirim' => $validated['pengirim'],
+            'instansi_pengirim' => $validated['instansi_pengirim'],
             'jenis_surat_id' => $validated['jenis_surat_id'],
             'keterangan' => $validated['keterangan'],
             'file_path' => $filePath,
             'is_from_guest' => true,
-            'guest_name' => $validated['guest_name'],
+            'guest_email' => $validated['guest_email'],
             'created_by' => null, // Karena guest tidak login
             'tanggal_masuk' => Carbon::now(),
         ]);

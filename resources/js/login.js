@@ -113,14 +113,6 @@ function setupPasswordToggle() {
 
     // Create toggle button
     const toggleBtn = document.createElement("button");
-    toggleBtn.type = "button";
-    toggleBtn.className = "password-toggle";
-    toggleBtn.innerHTML = `
-        <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
-            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
-        </svg>
-    `;
     toggleBtn.style.cssText = `
         position: absolute;
         right: 12px;
@@ -131,7 +123,9 @@ function setupPasswordToggle() {
         color: #6b7280;
         cursor: pointer;
         padding: 4px;
-        display: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     `;
 
     // Add toggle button to password field container
@@ -139,14 +133,16 @@ function setupPasswordToggle() {
     passwordContainer.style.position = "relative";
     passwordContainer.appendChild(toggleBtn);
 
+    passwordInput.style.paddingRight = "44px";
+
     // Toggle password visibility
-    toggleBtn.addEventListener("click", function () {
-        const type = passwordInput.type === "password" ? "text" : "password";
-        passwordInput.type = type;
+    toggleBtn.addEventListener("click", () => {
+        const show = passwordInput.type === "password";
+        passwordInput.type = show ? "text" : "password";
 
         // Update icon
-        if (type === "text") {
-            this.innerHTML = `
+        if (show) {
+            toggleBtn.innerHTML = `
                 <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z"/>
                     <path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829z"/>

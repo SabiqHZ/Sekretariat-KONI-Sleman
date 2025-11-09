@@ -11,7 +11,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const removeFileBtn = document.getElementById("remove-file");
     const submitButton = document.getElementById("submit-button");
     const form = document.querySelector("form");
-
+    const nomorSuratInput = document.querySelector('input[name="nomor_surat"]');
+    const guestEmailInput = document.querySelector('input[name="guest_email"]');
+    const tanggalSuratInput = document.querySelector(
+        'input[name="tanggal_surat"]',
+    );
+    const instansiInput = document.querySelector(
+        'input[name="instansi_pengirim"]',
+    );
+    const jenisSuratSelect = document.querySelector(
+        'select[name="jenis_surat_id"]',
+    );
     // ===================================
     // FILE INPUT CHANGE HANDLER
     // ===================================
@@ -57,16 +67,41 @@ document.addEventListener("DOMContentLoaded", function () {
     // ===================================
     // FORM SUBMISSION HANDLER
     // ===================================
+    // ===================================
+    // FORM SUBMISSION HANDLER
+    // ===================================
     if (form) {
         form.addEventListener("submit", function (e) {
-            // Validate file upload
-            if (!fileInput.files || fileInput.files.length === 0) {
+            // Cek field wajib diisi
+            const requiredFields = [
+                { el: nomorSuratInput, label: "Nomor Surat" },
+                { el: guestEmailInput, label: "Email Pengirim" },
+                { el: tanggalSuratInput, label: "Tanggal Surat" },
+                { el: instansiInput, label: "Instansi Pengirim" },
+                { el: jenisSuratSelect, label: "Jenis Surat" },
+            ];
+
+            const firstEmpty = requiredFields.find(
+                (item) => !item.el || !item.el.value.trim(),
+            );
+
+            if (firstEmpty) {
                 e.preventDefault();
-                alert("Silakan upload file PDF terlebih dahulu!");
+                alert(`Field "${firstEmpty.label}" Form Harap diisi!`);
+                if (firstEmpty.el) {
+                    firstEmpty.el.focus();
+                }
                 return false;
             }
 
-            // Show loading state
+            // Validasi upload file PDF
+            if (!fileInput.files || fileInput.files.length === 0) {
+                e.preventDefault();
+                alert("Silahkan upload file PDF terlebih dahulu!");
+                return false;
+            }
+
+            // Jika semua oke, tampilkan loading state
             showLoadingState();
         });
     }

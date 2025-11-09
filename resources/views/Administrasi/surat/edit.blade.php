@@ -125,7 +125,7 @@
                                 Pengirim
                             </span>
                         </label>
-                        <input type="text" name="pengirim" value="{{ $surat->pengirim }}"
+                        <input type="text" name="instansi_pengirim" value="{{ $surat->instansi_pengirim }}"
                             class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
                             placeholder="Nama instansi atau perorangan"
                             required>
