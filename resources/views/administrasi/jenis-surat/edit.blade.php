@@ -3,30 +3,31 @@
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <div class="bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-2xl font-semibold mb-6">Tambah Jenis Surat</h2>
-        
-        <form action="{{ route('administrasi.jenis-surat.store') }}" method="POST">
+        <h2 class="text-2xl font-semibold mb-6">Edit Jenis Surat</h2>
+
+        <form action="{{ route('administrasi.jenis-surat.update', $jenisSurat) }}" method="POST">
             @csrf
-            
+            @method('PUT')
+
             <div class="mb-4">
                 <label for="nama_jenis_surat" class="block text-sm font-medium text-gray-700 mb-2">Jenis Surat</label>
                 <input type="text" name="nama_jenis_surat" id="nama_jenis_surat"
-                    class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                    value="{{ old('nama_jenis_surat') }}"
-                    required>
+                       class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                       value="{{ old('nama_jenis_surat', $jenisSurat->nama_jenis_surat) }}"
+                       required>
                 @error('nama_jenis_surat')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
             <div class="flex justify-end">
-                <a href="{{ route('administrasi.surat.index') }}" 
+                <a href="{{ route('administrasi.jenis-surat.index') }}"
                    class="mr-4 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                     Batal
                 </a>
-                <button type="submit" 
+                <button type="submit"
                         class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    Simpan
+                    Simpan Perubahan
                 </button>
             </div>
         </form>

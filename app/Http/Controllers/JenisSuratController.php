@@ -3,34 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\JenisSurat;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Illuminate\Validation\Rule;
 
 class JenisSuratController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): View
     {
-        $jenisSurats = JenisSurat::all();
-        return view('JenisSurat.index', compact('jenisSurats'));
+        $jenisSurats = JenisSurat::orderBy('nama_jenis_surat')->get();
+
+        return view('administrasi.jenis-surat.index', compact('jenisSurats'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): View
     {
-        return view('administrasi.JenisSurat.create');
+        return view('administrasi.jenis-surat.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        $request->validate([
+        $validated = $request->validate([
             'nama_jenis_surat' => [
                 'required',
                 'string',
@@ -39,59 +33,46 @@ class JenisSuratController extends Controller
             ],
         ]);
 
-        JenisSurat::create($request->only('nama_jenis_surat'));
+        JenisSurat::create($validated);
 
-        return redirect()->route('administrasi.dashboard')
+        return redirect()->route('administrasi.jenis-surat.index')
             ->with('success', 'Jenis Surat berhasil ditambahkan!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(JenisSurat $jenissurat): RedirectResponse
     {
-        //
+        return redirect()->route('administrasi.jenis-surat.edit', $jenissurat);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(JenisSurat $jenissurat): View
     {
-        //
+        return view('administrasi.jenis-surat.edit', [
+            'jenisSurat' => $jenissurat,
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, JenisSurat $jenissurat): RedirectResponse
     {
-        $request->validate([
+        $validated = $request->validate([
             'nama_jenis_surat' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('jenis_surat', 'nama_jenis_surat')->ignore($id),
+                Rule::unique('jenis_surat', 'nama_jenis_surat')->ignore($jenissurat->id),
             ],
-
         ]);
 
-        $jenisSurat = JenisSurat::findOrFail($id);
-        $jenisSurat->update($request->only('nama_jenis_surat'));
+        $jenissurat->update($validated);
 
-
-        return redirect()->route('administrasi.index')
+        return redirect()->route('administrasi.jenis-surat.index')
             ->with('success', 'Jenis Surat berhasil diperbarui!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(JenisSurat $jenisSurat)
+    public function destroy(JenisSurat $jenissurat): RedirectResponse
     {
-        $jenisSurat->delete();
+        $jenissurat->delete();
 
-        return redirect()->route('administrasi.JenisSurat.index')
+        return redirect()->route('administrasi.jenis-surat.index')
             ->with('success', 'Jenis Surat berhasil dihapus!');
     }
 }

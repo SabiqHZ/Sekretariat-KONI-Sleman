@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdministrasiMiddleware
@@ -16,27 +15,22 @@ class AdministrasiMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user()) {
+        $user = $request->user();
 
-            if (in_array($request->user()->role, ['administrasi', 'supervisor'])) {
-                
-                return $next($request);
-            }
-            
-            else if ($request->user()->role === 'Keuangan') {
-
-                return to_route('keuangan.dashboard');
-            }
-
-            else if ($request->user()->role === 'aset') {
-
-                return to_route('aset.dashboard');
-            }
-
+        if (! $user) {
+            return to_route('Beranda');
         }
 
-        return to_route('Beranda');
+        $role = strtolower($user->role);
 
+        if (in_array($role, ['administrasi', 'supervisor'], true)) {
+            return $next($request);
+        }
+
+        return match ($role) {
+            'keuangan' => to_route('keuangan.dashboard'),
+            'aset'     => to_route('aset.dashboard'),
+            default    => to_route('Beranda'),
+        };
     }
-    
 }

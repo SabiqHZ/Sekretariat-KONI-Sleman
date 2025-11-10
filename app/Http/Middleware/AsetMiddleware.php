@@ -15,26 +15,22 @@ class AsetMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user()) {
+        $user = $request->user();
 
-            if( $request->user()->role === 'aset') {
-                // Redirect to a 403 Forbidden page or any other action
-                
-                return $next($request);
-            }
-
-            else if ($request->user()->role === 'administrasi') {
-                
-                return to_route('administrasi.dashboard');
-            }
-
-            else if ($request->user()->role === 'Keuangan') {
-                
-                return to_route('keuangan.dashboard');
-            }
+        if (! $user) {
+            return to_route('Beranda');
         }
 
-        return to_route('Beranda');
+        $role = strtolower($user->role);
 
+        if (in_array($role, ['aset', 'supervisor'], true)) {
+            return $next($request);
+        }
+
+        return match ($role) {
+            'administrasi' => to_route('administrasi.dashboard'),
+            'keuangan'     => to_route('keuangan.dashboard'),
+            default        => to_route('Beranda'),
+        };
     }
 }
