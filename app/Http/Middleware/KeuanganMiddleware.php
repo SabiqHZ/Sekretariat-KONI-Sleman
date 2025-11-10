@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class KeuanganMiddleware
@@ -16,26 +15,22 @@ class KeuanganMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user()) {
+        $user = $request->user();
 
-            if( $request->user()->role === 'keuangan') {
-                // Redirect to a 403 Forbidden page or any other action
-                
-                return $next($request);
-            }
-
-            else if ($request->user()->role === 'administrasi') {
-                
-                return redirect()->route('administrasi.dashboard');
-            }
-
-            else if ($request->user()->role === 'aset') {
-                
-                return redirect()->route('aset.dashboard');
-            }
+        if (! $user) {
+            return to_route('login')->with('error', 'You do not have access to this section.');
         }
 
-        return redirect()->route('login')->with('error', 'You do not have access to this section.');
+        $role = strtolower($user->role);
 
+        if (in_array($role, ['keuangan', 'supervisor'], true)) {
+            return $next($request);
+        }
+
+        return match ($role) {
+            'administrasi' => to_route('administrasi.dashboard'),
+            'aset'         => to_route('aset.dashboard'),
+            default        => to_route('Beranda'),
+        };
     }
 }

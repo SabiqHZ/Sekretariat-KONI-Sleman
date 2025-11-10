@@ -2,30 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use App\Models\Surats;
-use App\Policies\ViewerPolicy;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class SupervisorController extends Controller
 {
-    use AuthorizesRequests;
-
-    public function show (Surats $surat)
+    public function show(Surats $surat): View
     {
-            if (!Gate::allows('viewer-access', $surat)) {
+        $this->ensureSupervisorAccess();
+
+        return view('administrasi.surat.show', compact('surat'));
+    }
+
+    public function edit(): never
+    {
         abort(403, 'Anda tidak memiliki akses');
     }
 
-    return view('surat.show', compact('surat'));
-}
-
-    // Atau gunakan helper
-    public function edit(Surats $surat)
+    private function ensureSupervisorAccess(): void
     {
-        $this->authorize('edit-surat', $surat);
-        return view('surat.edit');
+        if (Auth::user()?->role !== 'supervisor') {
+            abort(403, 'Anda tidak memiliki akses');
+        }
     }
-    
 }
