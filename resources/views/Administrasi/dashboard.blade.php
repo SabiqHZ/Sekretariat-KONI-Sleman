@@ -190,7 +190,7 @@
                             <tbody>
                                 @forelse($recentSurat ?? [] as $surat)
                                 @php
-                                $status = strtolower($surat->status ?? 'menunggu');
+                                $status = strtolower((string)($surat->status ?? 'menunggu'));
                                 $statusClass = match ($status) {
                                 'diproses' => 'badge-info',
                                 'selesai' => 'badge-success',
@@ -229,7 +229,7 @@
                                     </td>
 
                                     <td>
-                                        {{ optional($surat->tanggal_masuk)->format('d M Y') ?? '-' }}
+                                        {{ optional($surat->tanggal_masuk)->format('Y-m-d') ?? '-' }}
                                     </td>
 
                                     <td>
@@ -325,7 +325,7 @@
                 PDF
             </button>
 
-            @if(auth()->user()->role === 'administrasi')
+            @if(optional(auth()->user())->role === 'administrasi')
             <button
                 type="button"
                 id="detailActionEdit"

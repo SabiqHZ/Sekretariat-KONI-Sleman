@@ -12,6 +12,7 @@ class Surats extends Model
     protected $casts = [
         'tanggal_surat' => 'date',
         'tanggal_masuk' => 'date',
+        'is_from_guest' => 'boolean',
     ];
     protected $table = 'surats';
 
@@ -26,6 +27,7 @@ class Surats extends Model
         'status',
         'is_from_guest',
         'guest_email',
+        'created_by',
     ];
     public const STATUS_MENUNGGU = 'menunggu';
     public const STATUS_DIPROSES = 'diproses';

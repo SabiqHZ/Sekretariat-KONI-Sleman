@@ -68,6 +68,8 @@ Route::get('/supervisor/dashboard', function () {
     return view('supervisor.dashboard');
 })->middleware(['auth', 'verified', SupervisorMiddleware::class])
     ->name('supervisor.dashboard');
+
+
 Route::prefix('guest')->name('guest.')->group(function () {
     Route::get('/surat', [GuestSuratController::class, 'create'])->name('surat.create');
     Route::post('/surat', [GuestSuratController::class, 'store'])->name('surat.store');

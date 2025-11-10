@@ -21,7 +21,6 @@
 
 body {
     font-family: "Lato", sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: #1e3a8a;
     min-height: 100vh;
     display: flex;
@@ -147,6 +146,7 @@ main {
     padding-top: 20px;
     display: flex;
     flex-direction: column;
+    background: none !important;
 }
 
 section {
@@ -161,9 +161,12 @@ section {
 }
 
 #home {
-    background: white;
-    color: white;
-    opacity: 0;
+    background-image: url("/images/white.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* opsional */
+    opacity: 100;
     animation: fadeIn 1.5s ease-out forwards;
     padding-left: 3.5rem;
     align-items: flex-start;

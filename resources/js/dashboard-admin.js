@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const editNomorInput = document.getElementById("edit-nomor-surat");
     const editTanggalSuratInput = document.getElementById("edit-tanggal-surat");
     const editTanggalMasukInput = document.getElementById("edit-tanggal-masuk");
-    const editPengirimInput = document.getElementById("edit-instansi_pengirim");
+    const editPengirimInput = document.getElementById("edit-instansi-pengirim");
     const editKeteranganInput = document.getElementById("edit-keterangan");
 
     if (detailEditBtn) {
@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (editTanggalMasukInput)
                 editTanggalMasukInput.value = btn.dataset.tanggalMasuk || "";
             if (editPengirimInput)
-                editPengirimInput.value = btn.dataset.pengirim || "";
+                editPengirimInput.value = btn.dataset.instansiPengirim || "";
             if (editKeteranganInput)
                 editKeteranganInput.value = btn.dataset.keterangan || "";
 
@@ -618,64 +618,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     // ... (kode profile dropdown existing)
 
-    // ---------------------------
-    // SIDEBAR
-    // ---------------------------
-    const sidebar = document.getElementById("sidebar");
-    const sidebarOverlay = document.getElementById("sidebarOverlay");
-    const toggleSidebar = document.getElementById("toggleSidebar");
-    const closeSidebar = document.getElementById("closeSidebar");
-    const sidebarUploadBtn = document.getElementById("sidebarUploadBtn");
-    const sidebarJenisBtn = document.getElementById("sidebarJenisBtn");
-
-    // Open sidebar
-    if (toggleSidebar && sidebar && sidebarOverlay) {
-        toggleSidebar.addEventListener("click", () => {
-            sidebar.classList.add("active");
-            sidebarOverlay.classList.add("active");
+    // ===========================
+    // ANCHOR SMOOTH SCROLL
+    // ===========================
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            const target = this.getAttribute("href").substring(1);
+            scrollToSection(target);
         });
-    }
-
-    // Close sidebar
-    const closeSidebarFn = () => {
-        if (sidebar) sidebar.classList.remove("active");
-        if (sidebarOverlay) sidebarOverlay.classList.remove("active");
-    };
-
-    if (closeSidebar) {
-        closeSidebar.addEventListener("click", closeSidebarFn);
-    }
-
-    if (sidebarOverlay) {
-        sidebarOverlay.addEventListener("click", closeSidebarFn);
-    }
-
-    // Upload surat dari sidebar
-    if (sidebarUploadBtn && uploadOverlay) {
-        sidebarUploadBtn.addEventListener("click", () => {
-            closeSidebarFn();
-            uploadOverlay.classList.add("show");
-        });
-    }
-
-    // Tambah jenis dari sidebar
-    if (sidebarJenisBtn && jenisOverlay) {
-        sidebarJenisBtn.addEventListener("click", () => {
-            closeSidebarFn();
-            jenisOverlay.classList.add("show");
-        });
-    }
-
-    // Close sidebar on Escape
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && sidebar?.classList.contains("active")) {
-            closeSidebarFn();
-        }
     });
-});
-
-window.addEventListener("load", () => {
-    document.body.classList.add("loaded");
 });
 
 // ===========================
@@ -683,15 +635,4 @@ window.addEventListener("load", () => {
 // ===========================
 window.addEventListener("load", () => {
     document.body.classList.add("loaded");
-});
-
-// ===========================
-// ANCHOR SMOOTH SCROLL
-// ===========================
-document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener("click", function (e) {
-        e.preventDefault();
-        const target = this.getAttribute("href").substring(1);
-        scrollToSection(target);
-    });
 });
