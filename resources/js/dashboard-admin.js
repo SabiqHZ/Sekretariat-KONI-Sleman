@@ -369,6 +369,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateCardsFromTable();
     applyTableFilters();
+    // ===========================
+    // PAGINATION QUERY STRING PERSISTENCE
+    // ===========================
+    document.addEventListener("DOMContentLoaded", () => {
+        // Preserve search and filter params on pagination clicks
+        const paginationLinks = document.querySelectorAll(
+            ".pagination-btn, .pagination-number",
+        );
+
+        paginationLinks.forEach((link) => {
+            if (link.tagName === "A") {
+                link.addEventListener("click", (e) => {
+                    const url = new URL(link.href);
+
+                    // Add current search term
+                    const searchValue = tableSearchInput?.value;
+                    if (searchValue) {
+                        url.searchParams.set("search", searchValue);
+                    }
+
+                    // Add current status filter
+                    const statusValue = statusFilter?.value;
+                    if (statusValue) {
+                        url.searchParams.set("status", statusValue);
+                    }
+
+                    // Add current sort
+                    const sortValue = sortOrderSelect?.value;
+                    if (sortValue) {
+                        const [sort, order] = sortValue.split("_");
+                        url.searchParams.set("sort", sort);
+                        url.searchParams.set(
+                            "order",
+                            order === "desc" ? "desc" : "asc",
+                        );
+                    }
+
+                    // Update href
+                    link.href = url.toString();
+                });
+            }
+        });
+    });
     // ---------------------------
     // STATUS DROPDOWN (FRONT-END ONLY)
     // ---------------------------
@@ -425,7 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const labelMap = {
             menunggu: "Menunggu",
-            diproses: "Proses",
+            diproses: "Diproses",
             selesai: "Selesai",
         };
         badge.textContent = labelMap[newStatus] || newStatus;
@@ -558,7 +601,51 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+    // ---------------------------
+    // FILE UPLOAD CLICK TRIGGER
+    // ---------------------------
+    const adminDropZone = document.getElementById("admin-drop-zone");
 
+    if (adminDropZone && adminFileInput) {
+        // Klik pada drop zone untuk buka file picker
+        adminDropZone.addEventListener("click", () => {
+            adminFileInput.click();
+        });
+
+        // Prevent default drag behaviors
+        ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+            adminDropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
+
+        // Highlight drop zone saat drag
+        ["dragenter", "dragover"].forEach((eventName) => {
+            adminDropZone.addEventListener(eventName, () => {
+                adminDropZone.style.borderColor = "var(--primary-color)";
+                adminDropZone.style.background = "#fef3c7";
+            });
+        });
+
+        ["dragleave", "drop"].forEach((eventName) => {
+            adminDropZone.addEventListener(eventName, () => {
+                adminDropZone.style.borderColor = "";
+                adminDropZone.style.background = "";
+            });
+        });
+
+        // Handle dropped files
+        adminDropZone.addEventListener("drop", (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                adminFileInput.files = files;
+                // Trigger change event
+                const event = new Event("change", { bubbles: true });
+                adminFileInput.dispatchEvent(event);
+            }
+        });
+    }
     // Escape untuk kedua overlay (upload + edit)
     document.addEventListener("keydown", (e) => {
         if (e.key !== "Escape") return;

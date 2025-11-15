@@ -34,14 +34,16 @@ Route::middleware(['auth', 'verified', AdministrasiMiddleware::class])
 
 
         // Jenis Surat (URL: jenissurat, nama route: jenis-surat.*)
-        Route::resource('jenissurat', JenisSuratController::class)->names([
-            'index'   => 'jenis-surat.index',
-            'create'  => 'jenis-surat.create',
-            'store'   => 'jenis-surat.store',
-            'edit'    => 'jenis-surat.edit',
-            'update'  => 'jenis-surat.update',
-            'destroy' => 'jenis-surat.destroy',
-        ]);
+        Route::resource('jenissurat', JenisSuratController::class)
+            ->parameters(['jenissurat' => 'jenisSurat'])
+            ->names([
+                'index'   => 'jenis-surat.index',
+                'create'  => 'jenis-surat.create',
+                'store'   => 'jenis-surat.store',
+                'edit'    => 'jenis-surat.edit',
+                'update'  => 'jenis-surat.update',
+                'destroy' => 'jenis-surat.destroy',
+            ]);
     });
 
 /*

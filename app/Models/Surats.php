@@ -27,7 +27,6 @@ class Surats extends Model
         'status',
         'is_from_guest',
         'guest_email',
-        'created_by',
     ];
     public const STATUS_MENUNGGU = 'menunggu';
     public const STATUS_DIPROSES = 'diproses';
@@ -38,10 +37,6 @@ class Surats extends Model
         return $this->belongsTo(JenisSurat::class, 'jenis_surat_id');
     }
 
-    public function creator()
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
     public function getFileUrlAttribute()
     {
         return $this->file_path ? Storage::url($this->file_path) : null;

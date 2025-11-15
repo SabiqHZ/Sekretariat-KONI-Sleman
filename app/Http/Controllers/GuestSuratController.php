@@ -41,7 +41,6 @@ class GuestSuratController extends Controller
             'file_path' => $filePath,
             'is_from_guest' => true,
             'guest_email' => $validated['guest_email'],
-            'created_by' => null, // Karena guest tidak login
             'tanggal_masuk' => Carbon::now(),
         ]);
 

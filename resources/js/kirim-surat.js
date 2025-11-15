@@ -64,12 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // ===================================
-    // FORM SUBMISSION HANDLER
-    // ===================================
-    // ===================================
-    // FORM SUBMISSION HANDLER
-    // ===================================
     if (form) {
         form.addEventListener("submit", function (e) {
             // Cek field wajib diisi

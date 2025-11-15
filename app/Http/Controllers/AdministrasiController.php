@@ -117,7 +117,6 @@ class AdministrasiController extends Controller
         }
 
         $data['status']     = $request->input('status', 'menunggu');
-        $data['created_by'] = Auth::id();
 
         Surats::create($data);
 

@@ -39,7 +39,7 @@
     </header>
     <main>
         {{-- Home Section --}}
-        <section id="home">
+        <section id="home" class="home-section">
             <img src="{{ asset('images/koni-logo.png') }}" alt="KONI Logo" class="logo">
             <h2>Sekretariat <br> KONI Sleman</h2>
             <p>

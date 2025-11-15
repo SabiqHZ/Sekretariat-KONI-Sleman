@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\JenisSurat;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Database\QueryException;
+use Symfony\Component\HttpFoundation\Response;
 
 class JenisSuratController extends Controller
 {
@@ -87,11 +89,27 @@ class JenisSuratController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(JenisSurat $jenisSurat)
+    public function destroy(Request $request, JenisSurat $jenisSurat)
     {
-        $jenisSurat->delete();
+        try {
+            $jenisSurat->delete();
 
-        return redirect()->route('administrasi.JenisSurat.index')
-            ->with('success', 'Jenis Surat berhasil dihapus!');
+            if ($request->wantsJson()) {
+                return response()->json(['message' => 'deleted'], Response::HTTP_OK);
+            }
+
+            // fallback non-AJAX (form biasa)
+            return redirect()
+                ->route('administrasi.dashboard')
+                ->with('success', 'Jenis Surat berhasil dihapus!');
+        } catch (QueryException $e) {
+            if ($e->getCode() === '23000') {
+                $msg = 'Jenis surat tidak bisa dihapus karena sudah dipakai oleh data surat.';
+                return $request->wantsJson()
+                    ? response()->json(['message' => $msg], Response::HTTP_CONFLICT)
+                    : back()->with('error', $msg);
+            }
+            throw $e;
+        }
     }
 }

@@ -46,7 +46,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
-                    <span>Tambah Jenis</span>
+                    <span>Kelola Jenis</span>
                 </button>
 
 
@@ -154,7 +154,7 @@
                                     <select id="statusFilter">
                                         <option value="">Semua status</option>
                                         <option value="menunggu">Menunggu</option>
-                                        <option value="diproses">Diproses</option>
+                                        <option value="diproses">Proses</option>
                                         <option value="selesai">Selesai</option>
                                     </select>
                                 </div>
@@ -225,7 +225,7 @@
                                     </td>
 
                                     <td>
-                                        {{ optional($surat->tanggal_surat)->format('d M Y') ?? '-' }}
+                                        {{ optional($surat->tanggal_surat)->format('Y-m-d') ?? '-' }}
                                     </td>
 
                                     <td>
@@ -269,49 +269,153 @@
                                 @endforelse
                             </tbody>
                         </table>
+
+                        {{-- Pagination --}}
+                        @if($recentSurat->hasPages())
+                        <div class="pagination-wrapper">
+                            <div class="pagination-info">
+                                Menampilkan {{ $recentSurat->firstItem() ?? 0 }} - {{ $recentSurat->lastItem() ?? 0 }}
+                                dari {{ $recentSurat->total() }} surat
+                            </div>
+
+                            <div class="pagination-controls">
+                                {{-- Previous Button --}}
+                                @if($recentSurat->onFirstPage())
+                                <button class="pagination-btn" disabled>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                    Sebelumnya
+                                </button>
+                                @else
+                                <a href="{{ $recentSurat->previousPageUrl() }}" class="pagination-btn">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                    Sebelumnya
+                                </a>
+                                @endif
+
+                                {{-- Page Numbers --}}
+                                <div class="pagination-numbers">
+                                    @foreach($recentSurat->getUrlRange(1, $recentSurat->lastPage()) as $page => $url)
+                                    @if($page == $recentSurat->currentPage())
+                                    <span class="pagination-number active">{{ $page }}</span>
+                                    @else
+                                    <a href="{{ $url }}" class="pagination-number">{{ $page }}</a>
+                                    @endif
+                                    @endforeach
+                                </div>
+
+                                {{-- Next Button --}}
+                                @if($recentSurat->hasMorePages())
+                                <a href="{{ $recentSurat->nextPageUrl() }}" class="pagination-btn">
+                                    Selanjutnya
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                                @else
+                                <button class="pagination-btn" disabled>
+                                    Selanjutnya
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </button>
+                                @endif
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
         </section>
-        {{-- Tambah Jenis Surat Modal --}}
+        {{-- Tambah / Kelola Jenis Surat Modal --}}
         <div id="jenisOverlay" class="upload-overlay">
             <div class="upload-card">
                 <button type="button" id="closeJenisCard" class="upload-close-btn">&times;</button>
 
                 <div class="upload-card-inner">
                     <div class="upload-card-header">
-                        <h3>Tambah Jenis Surat</h3>
-                        <p>Tambahkan jenis surat baru tanpa meninggalkan halaman</p>
+                        <h3>Kelola Jenis Surat</h3>
+                        <p>Lihat, tambah, dan hapus jenis surat tanpa meninggalkan halaman</p>
                     </div>
 
-                    <form action="{{ route('administrasi.jenis-surat.store') }}" method="POST">
-                        @csrf
+                    <div class="jenis-grid">
+                        {{-- LIST JENIS SURAT YANG SUDAH ADA --}}
+                        <div class="jenis-list">
+                            <h4>Daftar Jenis Surat</h4>
 
-                        <div class="upload-form-grid">
-                            <div class="upload-form-group full">
-                                <label for="nama_jenis_surat" class="upload-label">Jenis Surat</label>
-                                <input
-                                    type="text"
-                                    name="nama_jenis_surat"
-                                    id="nama_jenis_surat"
-                                    class="upload-input"
-                                    value="{{ old('nama_jenis_surat') }}"
-                                    required>
-                                @error('nama_jenis_surat')
-                                <p class="upload-error-text">{{ $message }}</p>
-                                @enderror
+                            @if($types->count())
+                            <div class="jenis-list-table">
+                                <table class="dashboard-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 40px;">No</th>
+                                            <th>Nama Jenis Surat</th>
+                                            <th style="width: 90px;">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($types as $jenis)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $jenis->nama_jenis_surat }}</td>
+                                            <td>
+                                                <form
+                                                    action="{{ route('administrasi.jenis-surat.destroy', $jenis) }}"
+                                                    method="POST"
+                                                    onsubmit="return confirm('Yakin ingin menghapus jenis surat ini?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn-jenis-delete">
+                                                        Hapus
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
+                            @else
+                            <p class="upload-file-hint">Belum ada jenis surat yang terdaftar.</p>
+                            @endif
                         </div>
 
-                        <div class="upload-actions">
-                            <button type="button" class="upload-cancel-btn" id="cancelJenisBtn">
-                                Batal
-                            </button>
-                            <button type="submit" class="upload-submit-btn">
-                                Simpan Jenis Surat
-                            </button>
+                        {{-- FORM TAMBAH JENIS SURAT (TETAP ADA) --}}
+                        <div class="jenis-form">
+                            <h4>Tambah Jenis Baru</h4>
+
+                            <form action="{{ route('administrasi.jenis-surat.store') }}" method="POST">
+                                @csrf
+
+                                <div class="upload-form-group full">
+                                    <label for="nama_jenis_surat" class="upload-label">Jenis Surat</label>
+                                    <input
+                                        type="text"
+                                        name="nama_jenis_surat"
+                                        id="nama_jenis_surat"
+                                        class="upload-input"
+                                        value="{{ old('nama_jenis_surat') }}"
+                                        required>
+                                    @error('nama_jenis_surat')
+                                    <p class="upload-error-text">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div class="upload-actions">
+                                    <button type="button" class="upload-cancel-btn" id="cancelJenisBtn">
+                                        Batal
+                                    </button>
+                                    <button type="submit" class="upload-submit-btn">
+                                        Simpan Jenis Surat
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                    </form>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -333,12 +437,7 @@
                 Edit
             </button>
 
-            <button
-                type="button"
-                id="detailActionDelete"
-                class="detail-dropdown-item detail-dropdown-item-danger">
-                Hapus
-            </button>
+
             @endif
         </div>
 

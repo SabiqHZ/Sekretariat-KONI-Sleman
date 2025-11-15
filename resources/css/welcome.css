@@ -142,11 +142,11 @@ a.btn {
 }
 
 main {
+    background: none;
     flex: 1;
     padding-top: 20px;
     display: flex;
     flex-direction: column;
-    background: none !important;
 }
 
 section {
@@ -161,18 +161,23 @@ section {
 }
 
 #home {
-    background-image: url("/images/white.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-attachment: fixed; /* opsional */
+    background-attachment: fixed;
     opacity: 100;
     animation: fadeIn 1.5s ease-out forwards;
     padding-left: 3.5rem;
     align-items: flex-start;
     text-align: left;
 }
-
+.home-section {
+    background-image: url("/images/white.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
 .logo {
     width: 170px;
     height: 170px;

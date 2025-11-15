@@ -33,10 +33,22 @@
             <!-- Header Section -->
             <div class="page-header">
                 <div class="page-header-icon">
-                    <svg class="icon-lg" fill="none" stroke="#eb5120" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                    <svg class="icon-lg" viewBox="0 0 24 24" fill="none" stroke="url(#gradAccent)" stroke-width="2">
+                        <defs>
+                            <linearGradient id="gradAccent" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#EB5120" />
+                                <stop offset="100%" stop-color="#F59E0B" />
+                            </linearGradient>
+                        </defs>
+                        <!-- scale 0.85 di pusat (12,12). Ubah 0.85 sesuai kebutuhan -->
+                        <g transform="translate(12 12) scale(0.85) translate(-12 -12)">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                        </g>
                     </svg>
                 </div>
+
+
                 <h1 class="page-title">Kirim Surat</h1>
                 <p class="page-subtitle">Lengkapi form berikut untuk mengirim surat administrasi</p>
             </div>
@@ -178,12 +190,13 @@
                     <div class="form-actions">
                         <button type="submit" id="submit-button" class="submit-button">
                             <span class="submit-button-content">
-                                <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                                 </svg>
                                 Kirim Surat
                             </span>
                         </button>
+
                     </div>
                 </form>
             </div>
