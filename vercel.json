@@ -1,0 +1,37 @@
+{
+    "version": 2,
+    "framework": null,
+    "buildCommand": "npm ci --legacy-peer-deps && npm run build",
+    "installCommand": "npm ci --legacy-peer-deps",
+    "devCommand": "npm run dev",
+    "outputDirectory": "public",
+    "builds": [
+        {
+            "src": "api/index.php",
+            "use": "vercel-php@0.7.4"
+        },
+        {
+            "src": "public/**",
+            "use": "@vercel/static"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/build/(.*)",
+            "dest": "/public/build/$1"
+        },
+        {
+            "src": "/(css|js|images|fonts|storage)/(.*)",
+            "dest": "/public/$1/$2"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/api/index.php"
+        }
+    ],
+    "env": {
+        "APP_ENV": "production",
+        "APP_DEBUG": "false",
+        "NODE_VERSION": "20.x"
+    }
+}
